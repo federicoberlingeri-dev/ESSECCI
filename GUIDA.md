@@ -31,6 +31,22 @@
 
 > Tutto ciò che è marcato **[DA CONFERMARE]** o **[ESEMPIO]** è provvisorio e va sostituito dal pannello.
 
+## Accessi al pannello e passaggio di proprietà
+Il pannello `/admin/` non ha password proprie: si entra con un **account GitHub personale**. Può entrare chiunque abbia permesso di scrittura sul repository `federicoberlingeri-dev/ESSECCI`. Ognuno usa le proprie credenziali e niente va condiviso.
+
+**Dare accesso a una nuova persona (es. gestore del negozio):**
+1. La persona crea un account gratuito su github.com (meglio con email aziendale) e attiva la verifica in due passaggi.
+2. Sul repository: *Settings → Collaborators → Add people* → inserire il suo nome utente GitHub.
+3. La persona accetta l’invito (arriva per email), poi va su `https://<sito>/admin/` → **Accedi con GitHub** → *Authorize*.
+4. Per togliere l’accesso: *Settings → Collaborators → Remove*.
+
+**Passaggio di proprietà allo sviluppo concluso:**
+- **GitHub:** consigliato creare un’organizzazione gratuita intestata all’azienda (es. `essecci`), con il nuovo proprietario come *Owner*, e trasferirvi il repository (*Settings → Danger Zone → Transfer ownership*). Dopo il trasferimento aggiornare `repo:` in `public/admin/config.yml`.
+- **App di accesso al pannello** (GitHub OAuth App "Essecci - Gestione sito"): va trasferita al nuovo proprietario (*Settings → Developer settings → OAuth Apps → app → Transfer ownership*), oppure lui ne crea una nuova e sostituisce Client ID/Secret in Netlify (*Project configuration → Security → OAuth*).
+- **Netlify:** invitare il nuovo proprietario nel team (*Team settings → Members*; sul piano gratuito i membri possono essere limitati) oppure trasferire il progetto sul suo account (*Project configuration → General → Transfer project*). Dopo il trasferimento ricollegare il repository se Netlify lo chiede.
+- **Dominio:** deve essere intestato all’azienda, non allo sviluppatore.
+- Infine lo sviluppatore si rimuove da collaboratore / membro del team.
+
 ## Modulo contatti
 - Il cliente sceglie **negozio** e **esigenza**; i campi cambiano (allegato bolletta fino a 8 MB, data/fascia oraria per l’assistenza, dati azienda per Drive2Store).
 - Ogni richiesta arriva su uno di tre moduli Netlify: `contatti-formigine`, `contatti-maranello`, `contatti-drive2store`.
