@@ -43,12 +43,12 @@ collections:
           - { label: Centro TIM Formigine, value: formigine }
           - { label: Store Multibrand Maranello, value: maranello }
           - { label: Entrambi, value: entrambi }
-      - { name: gestore, label: Gestore (facoltativo), widget: relation, collection: gestori, search_fields: [nome], value_field: '{{slug}}', display_fields: [nome], required: false }
+      - { name: gestore, label: Gestore, widget: relation, collection: gestori, search_fields: [nome], value_field: '{{slug}}', display_fields: [nome], required: false }
       - { name: descrizione, label: Descrizione, widget: text }
-      - { name: immagine, label: 'Immagine (facoltativa, formato 16:9)', widget: image, required: false }
+      - { name: immagine, label: 'Immagine (formato 16:9)', widget: image, required: false }
       - { name: etichetta, label: 'Etichetta (es. Novità, Solo online)', widget: string, required: false }
-      - { name: scadenza, label: Valida fino al (facoltativo), widget: datetime, format: 'YYYY-MM-DD', date_format: 'DD/MM/YYYY', time_format: false, required: false, hint: Dopo questa data la promo sparisce dal sito. }
-      - { name: note, label: Note legali brevi (facoltative), widget: text, required: false }
+      - { name: scadenza, label: Valida fino al, widget: datetime, format: 'YYYY-MM-DD', date_format: 'DD/MM/YYYY', time_format: false, required: false, hint: Dopo questa data la promo sparisce dal sito. }
+      - { name: note, label: Note legali brevi, widget: text, required: false }
       - name: esigenza
         label: Argomento preimpostato nel modulo
         widget: select
@@ -85,9 +85,9 @@ collections:
           - { label: Centro TIM Formigine, value: formigine }
           - { label: Store Multibrand Maranello, value: maranello }
       - { name: categoria, label: Categoria, widget: string, hint: 'Usata per raggruppare i gestori nella pagina negozio. Usa lo stesso testo per gestori della stessa categoria (es. "Telefonia e Internet", "Luce e Gas", "TV e Internet").' }
-      - { name: descrizione, label: Nota breve (facoltativa), widget: string, required: false }
+      - { name: descrizione, label: Nota breve, widget: string, required: false }
       - { name: logo, label: Logo (PNG/SVG con sfondo trasparente), widget: image, required: false, hint: Se vuoto viene mostrato il nome. }
-      - { name: sito, label: Sito web (facoltativo), widget: string, required: false }
+      - { name: sito, label: Sito web, widget: string, required: false }
       - { name: attivo, label: Attivo (visibile sul sito), widget: boolean, default: true }
       - { name: striscia, label: 'Mostra nella striscia I nostri partner', widget: boolean, default: true }
       - { name: ordine, label: Ordine, widget: number, value_type: int, default: 50 }
@@ -164,7 +164,7 @@ collections:
           { name: whatsapp, label: 'WhatsApp (con prefisso, es. +39 333...)', widget: string, required: false },
           { name: email, label: Email, widget: string, required: false },
           { name: orari, label: Orari, widget: list, fields: [ { name: giorni, label: Giorni, widget: string }, { name: ore, label: Orario, widget: string } ] },
-          { name: mappa, label: Link Google Maps (facoltativo), widget: string, required: false },
+          { name: mappa, label: Link Google Maps, widget: string, required: false },
           { name: foto, label: Foto del negozio, widget: image, required: false },
           { name: social, label: Social, widget: object, fields: [
               { name: facebook, label: Facebook (URL), widget: string, required: false },
@@ -218,7 +218,7 @@ collections:
               - { name: titolo, label: Titolo, widget: string }
               - { name: evidenza, label: Parte del titolo colorata, widget: string }
               - { name: sottotitolo, label: Sottotitolo, widget: text }
-              - { name: foto, label: Foto reale (facoltativa, 4:3), widget: image, required: false }
+              - { name: foto, label: Foto reale (4:3), widget: image, required: false }
           - name: esigenze
             label: Argomenti del modulo contatti
             hint: 'Non modificare il campo "Codice" degli argomenti esistenti: è usato da servizi e promo.'
