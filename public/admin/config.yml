@@ -2,7 +2,7 @@
 # Ogni salvataggio crea un commit su GitHub e Netlify ripubblica il sito in 1–2 minuti.
 backend:
   name: github
-  repo: OWNER/REPO            # [DA CONFIGURARE] es. essecci/sito-essecci
+  repo: federicoberlingeri-dev/ESSECCI
   branch: main
   commit_messages:
     create: 'Nuovo {{collection}}: {{slug}}'
