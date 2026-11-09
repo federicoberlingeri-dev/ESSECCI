@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import PartnerStrip from '../components/PartnerStrip.astro';
+import { getServizi, getNegozi, temaNegozio, type NegozioId } from '../lib/data';
+const servizi = await getServizi();
+const negozi = await getNegozi();
+---
+<Base title="Servizi in negozio" description="Passaggio dati, configurazione dispositivi, analisi bollette luce e gas, promo combinate, antifurti, assicurazioni e assistenza nei negozi Essecci di Formigine e Maranello.">
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / Servizi</nav>
+      <span class="eyebrow">Servizi</span>
+      <h1>Servizi in negozio</h1>
+      <p class="lead">Ti aiutiamo a scegliere, attivare e usare al meglio linee, dispositivi e forniture. Con un consulente che ti segue anche dopo.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="grid grid-3">{servizi.map((s) => <ServiceCard servizio={s} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>In quale negozio?</h2>
+        <p>Entrambi i negozi offrono i servizi principali. Scegli quello più vicino o più adatto alla tua esigenza.</p>
+      </div>
+      <div class="grid grid-2">
+        {negozi.map((n) => (
+          <a href={`/${n.id}/`} class:list={['card card-link glow glow--soft which', temaNegozio[n.id as NegozioId]]}>
+            <span class="chip">{n.data.tipo}</span>
+            <h3>{n.data.nome}</h3>
+            <p class="muted">{n.data.descrizione}</p>
+            <span class="link-arrow">Vai al negozio <Icon name="arrow" /></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="card glow t-brand bolletta">
+        <span class="icon-badge"><Icon name="file" /></span>
+        <div>
+          <h2>Vuoi far analizzare la bolletta? Inviacela online</h2>
+          <p class="muted">Carica il PDF o una foto della tua bolletta luce o gas dal modulo: la analizziamo e ti ricontattiamo.</p>
+        </div>
+        <a class="btn btn--primary" href="/contatti/?esigenza=bolletta#modulo"><Icon name="upload" />Carica la bolletta</a>
+      </div>
+    </div>
+  </section>
+  <PartnerStrip />
+</Base>
+<style>
+  .which { display: flex; flex-direction: column; gap: 10px; }
+  .which h3 { margin: 6px 0 0; font-size: 1.4rem; }
+  .which p { margin: 0; }
+  .bolletta { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; }
+  .bolletta h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); margin-bottom: .3em; }
+  .bolletta p { margin: 0; }
+  @media (max-width: 760px) { .bolletta { grid-template-columns: 1fr; } }
+</style>

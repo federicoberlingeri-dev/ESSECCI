@@ -1,0 +1,13 @@
+{
+  "nome": "TIM",
+  "negozi": [
+    "formigine"
+  ],
+  "categoria": "Telefonia, Internet, TV ed Energia",
+  "descrizione": "",
+  "logo": "",
+  "sito": "",
+  "attivo": true,
+  "striscia": true,
+  "ordine": 1
+}

@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Social from './Social.astro';
+import { getImpostazioni, getNegozi, temaNegozio, daConfermare, telHref, type NegozioId } from '../lib/data';
+const imp = await getImpostazioni();
+const negozi = await getNegozi();
+const anno = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div class="brand">
+      <Logo />
+      <p class="muted">Telefonia, energia, sicurezza e servizi per privati e aziende. Due negozi a Formigine e Maranello, un unico partner.</p>
+      <a class="link-arrow t-brand" href="/drive2store/">Sei un negozio? Scopri Drive2Store <Icon name="arrow" /></a>
+    </div>
+    {negozi.map((n) => (
+      <div class:list={['store', temaNegozio[n.id as NegozioId]]}>
+        <h3><span class="dot" aria-hidden="true" />{n.data.nome}</h3>
+        <p><Icon name="pin" size={18} /><span>{n.data.indirizzo}<br />{n.data.citta}</span></p>
+        <p><Icon name="call" size={18} />{daConfermare(n.data.telefono) ? <span>{n.data.telefono}</span> : <a href={telHref(n.data.telefono)}>{n.data.telefono}</a>}</p>
+        <Social social={n.data.social} nome={n.data.nome} size="sm" />
+        <a class="link-arrow" href={`/${n.id}/`}>Vai al negozio <Icon name="arrow" /></a>
+      </div>
+    ))}
+    <nav class="links" aria-label="Link utili">
+      <h3>Link utili</h3>
+      <ul>
+        <li><a href="/servizi/">Servizi</a></li>
+        <li><a href="/promozioni/">Promozioni</a></li>
+        <li><a href="/drive2store/">B2B Drive2Store</a></li>
+        <li><a href="/contatti/">Contatti</a></li>
+        <li><a href="/privacy/">Privacy policy</a></li>
+        <li><a href="/cookie/">Cookie policy</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap legal">
+    <p>© {anno} {imp.ragioneSociale} · P.IVA {imp.piva} · Sede legale: {imp.sedeLegale}</p>
+    <p class="muted">I marchi citati appartengono ai rispettivi titolari.</p>
+  </div>
+</footer>
+<style>
+  .site-footer { background: #fff; border-top: 1px solid var(--line); padding-top: 64px; margin-top: 0; }
+  .cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr .8fr; gap: 40px; padding-bottom: 40px; }
+  .brand p { margin: 16px 0; max-width: 34ch; font-size: .95rem; }
+  h3 { font-size: 1rem; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); flex: none; }
+  .store p { display: flex; gap: 8px; font-size: .95rem; margin-bottom: 10px; }
+  .store p :global(svg) { color: var(--accent); flex: none; margin-top: 3px; }
+  .store a:not(.link-arrow) { color: var(--ink-2); }
+  .store .link-arrow { margin-top: 14px; font-size: .95rem; }
+  .links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: .95rem; }
+  .links a { color: var(--ink-2); text-decoration: none; }
+  .links a:hover { color: var(--brand); text-decoration: underline; }
+  .legal { border-top: 1px solid var(--line); padding-block: 20px 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: .85rem; }
+  .legal p { margin: 0; }
+  @media (max-width: 960px) { .cols { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cols { grid-template-columns: 1fr; gap: 32px; } }
+</style>

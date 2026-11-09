@@ -1,0 +1,183 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import StoreCard from '../components/StoreCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import PromoCard from '../components/PromoCard.astro';
+import PartnerStrip from '../components/PartnerStrip.astro';
+import StoreInfo from '../components/StoreInfo.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { getImpostazioni, getNegozi, getServizi, getPromo, getPagina, getGestori, localBusinessLd } from '../lib/data';
+
+const imp = await getImpostazioni();
+const negozi = await getNegozi();
+const servizi = await getServizi({ home: true });
+const promo = (await getPromo()).slice(0, 3);
+const gestori = await getGestori();
+const nomeGestore = (id: string) => gestori.find((g) => g.id === id)?.data.nome;
+const d2s = await getPagina('drive2store');
+const ld = negozi.map((n) => localBusinessLd(n, Astro.site!)).filter(Boolean) as Record<string, unknown>[];
+---
+<Base
+  title={`${imp.marchio} — Centro TIM Formigine e Store Multibrand Maranello`}
+  description="Telefonia, internet, TV, luce e gas, antifurti e assicurazioni. Il Centro TIM ufficiale di Formigine e lo Store multi-operatore di Maranello: consulenza reale per privati e aziende."
+  jsonLd={ld.length ? ld : undefined}
+>
+  <!-- HERO -->
+  <section class="hero">
+    <div class:list={['wrap hero-grid', imp.hero.foto && 'has-photo']}>
+      <div class="hero-text">
+        <span class="eyebrow">Formigine · Maranello</span>
+        <h1>{imp.hero.titolo} <span class="grad">{imp.hero.evidenza}</span></h1>
+        <p class="lead">{imp.hero.sottotitolo}</p>
+        <div class="btn-row hero-cta">
+          <a href="/formigine/" class="btn btn--outline t-tim"><span class="dot t-tim" aria-hidden="true" />Centro TIM Formigine</a>
+          <a href="/maranello/" class="btn btn--outline t-mb"><span class="dot t-mb" aria-hidden="true" />Store Multibrand Maranello</a>
+        </div>
+        <ul class="trust">
+          <li><Icon name="users" size={20} />Privati e aziende</li>
+          <li><Icon name="store" size={20} />Consulenza in negozio</li>
+          <li><Icon name="headset" size={20} />Assistenza dopo l’acquisto</li>
+        </ul>
+      </div>
+      {imp.hero.foto && <div class="hero-photo card glow"><img src={imp.hero.foto} alt="Il nostro staff in negozio" width="640" height="480" /></div>}
+    </div>
+  </section>
+
+  <!-- DUE NEGOZI -->
+  <section class="section section--stores" aria-labelledby="negozi-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="negozi-title">Scegli il negozio giusto per te</h2>
+        <p>Due negozi con logiche diverse e complementari, sotto lo stesso marchio.</p>
+      </div>
+      <div class="grid grid-2 stores">
+        {negozi.map((n) => <StoreCard negozio={n} />)}
+      </div>
+      <div class="compare">
+        <div class="t-tim"><strong>Vuoi TIM?</strong> Al Centro TIM Formigine trovi tutta l’offerta ufficiale.</div>
+        <div class="t-mb"><strong>Vuoi confrontare?</strong> A Maranello mettiamo a confronto più operatori per te.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIZI -->
+  <section class="section section--white" aria-labelledby="servizi-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Servizi in negozio</span>
+        <h2 id="servizi-title">In ogni settore, una risposta completa</h2>
+        <p>Non solo contratti: ti seguiamo prima, durante e dopo.</p>
+      </div>
+      <div class="grid grid-4">
+        {servizi.map((s) => <ServiceCard servizio={s} />)}
+      </div>
+      <p class="center more"><a class="link-arrow" href="/servizi/">Tutti i servizi <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <!-- DRIVE2STORE -->
+  <section class="section" aria-labelledby="d2s-title">
+    <div class="wrap">
+      <div class="d2s card glow t-brand">
+        <div class="d2s-text">
+          <span class="eyebrow">Per le aziende · B2B</span>
+          <h2 id="d2s-title">{d2s.titolo}: {d2s.sottotitolo.toLowerCase()}</h2>
+          <p class="muted">{d2s.introduzione}</p>
+          <p class="for"><strong>Per:</strong> {d2s.destinatari.join(' · ')}</p>
+          <div class="btn-row">
+            <a href="/drive2store/" class="btn btn--primary">Scopri Drive2Store <Icon name="arrow" /></a>
+            <a href="/contatti/?esigenza=drive2store#modulo" class="btn btn--ghost">Richiedi info</a>
+          </div>
+        </div>
+        <ul class="d2s-tools">
+          {d2s.strumenti.map((s) => (
+            <li><span class="icon-badge"><Icon name={s.icona} /></span><div><strong>{s.titolo}</strong><span>{s.testo}</span></div></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMO -->
+  {promo.length > 0 && (
+    <section class="section section--tight" aria-labelledby="promo-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Promozioni</span>
+          <h2 id="promo-title">Le promo in corso</h2>
+        </div>
+        <div class="grid grid-3">
+          {promo.map((p) => <PromoCard promo={p} nomeGestore={nomeGestore(p.data.gestore)} />)}
+        </div>
+        <p class="center more"><a class="link-arrow" href="/promozioni/">Tutte le promozioni <Icon name="arrow" /></a></p>
+      </div>
+    </section>
+  )}
+
+  <PartnerStrip />
+
+  <!-- DOVE SIAMO + FORM -->
+  <section class="section" id="dove-siamo" aria-labelledby="dove-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Dove siamo</span>
+        <h2 id="dove-title">Ti aspettiamo in negozio</h2>
+      </div>
+      <div class="grid grid-2">
+        {negozi.map((n) => <StoreInfo negozio={n} mappa={false} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white" id="modulo" aria-label="Modulo di contatto">
+    <div class="wrap narrow">
+      <ContactForm />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(48px, 8vw, 104px) clamp(8px, 2vw, 24px); position: relative; }
+  .hero::before, .hero::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(10px); pointer-events: none; }
+  .hero::before { width: 520px; height: 520px; left: -180px; top: 40px; background: radial-gradient(circle, rgb(255 45 70 / .16), rgb(37 99 235 / .10) 40%, transparent 68%); }
+  .hero::after { width: 560px; height: 560px; right: -200px; top: -40px; background: radial-gradient(circle, rgb(20 194 176 / .18), rgb(255 147 52 / .10) 42%, transparent 68%); }
+  .hero-grid { display: grid; gap: 40px; align-items: center; text-align: center; justify-items: center; }
+  .hero-grid.has-photo { grid-template-columns: 1.1fr .9fr; text-align: left; justify-items: start; }
+  .hero-text { max-width: 860px; }
+  .grad { background: linear-gradient(90deg, var(--tim-2), #7c3aed 45%, var(--mb-1)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { font-size: clamp(1.08rem, 1.7vw, 1.28rem); color: var(--muted); max-width: 680px; margin: 0 auto 28px; }
+  .has-photo .lead { margin-inline: 0; }
+  .hero-cta { justify-content: center; }
+  .has-photo .hero-cta { justify-content: flex-start; }
+  .hero-cta .btn { min-height: 54px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); }
+  .trust { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 26px; color: var(--ink-2); font-weight: 600; font-size: .95rem; }
+  .has-photo .trust { justify-content: flex-start; }
+  .trust li { display: flex; align-items: center; gap: 8px; }
+  .trust :global(svg) { color: var(--brand); }
+  .hero-photo { padding: 0; overflow: hidden; }
+  .hero-photo img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+
+  .section--stores { padding-top: clamp(40px, 5vw, 64px); }
+  .stores { gap: clamp(28px, 4vw, 44px); }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+  .compare div { padding: 14px 18px; border-radius: 14px; background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--g1); font-size: .95rem; }
+  .compare strong { color: var(--accent); }
+  .more { margin: 32px 0 0; }
+
+  .d2s { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(24px, 4vw, 56px); align-items: center; padding: clamp(28px, 4.5vw, 56px); }
+  .d2s h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); }
+  .for { font-size: .95rem; margin-bottom: 24px; }
+  .d2s-tools { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .d2s-tools li { display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 16px; background: #f7faff; border: 1px solid var(--line); }
+  .d2s-tools strong { display: block; color: var(--ink); }
+  .d2s-tools span:not(.icon-badge) { font-size: .92rem; color: var(--muted); }
+
+  .narrow { max-width: 900px; }
+
+  @media (max-width: 900px) {
+    .hero-grid.has-photo, .d2s { grid-template-columns: 1fr; }
+    .compare { grid-template-columns: 1fr; }
+  }
+</style>

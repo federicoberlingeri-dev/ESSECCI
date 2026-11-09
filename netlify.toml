@@ -1,0 +1,27 @@
+# Configurazione Netlify (hosting, HTTPS, moduli, CMS)
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+  ASTRO_TELEMETRY_DISABLED = "1"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Le sagome dei moduli non devono essere indicizzate
+[[headers]]
+  for = "/moduli-netlify.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"

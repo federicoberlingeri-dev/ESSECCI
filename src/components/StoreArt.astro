@@ -1,0 +1,39 @@
+---
+// Illustrazioni vettoriali leggere per le card negozio (nessuna foto stock).
+interface Props { tipo: 'formigine' | 'maranello' }
+const { tipo } = Astro.props;
+---
+{tipo === 'formigine' ? (
+  <svg class="art" viewBox="0 0 220 220" aria-hidden="true">
+    <defs>
+      <linearGradient id="tA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eaf1ff"/><stop offset="1" stop-color="#ffe8ec"/></linearGradient>
+      <linearGradient id="tB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#ff2d46"/></linearGradient>
+    </defs>
+    <circle cx="110" cy="110" r="96" fill="url(#tA)"/>
+    <g transform="rotate(-12 110 112)">
+      <rect x="72" y="34" width="76" height="150" rx="16" fill="#fff" stroke="#0d1a3a" stroke-width="4"/>
+      <rect x="80" y="48" width="60" height="118" rx="8" fill="url(#tB)" opacity=".9"/>
+      <rect x="98" y="40" width="24" height="5" rx="2.5" fill="#0d1a3a"/>
+      <path d="M94 104c9-9 23-9 32 0M100 112c5-5 15-5 20 0M88 96c13-13 31-13 44 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="110" cy="122" r="4" fill="#fff"/>
+    </g>
+    <rect x="150" y="44" width="46" height="30" rx="10" fill="#fff" stroke="#e3e8f2"/>
+    <text x="173" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#c8102e" font-family="inherit">5G</text>
+    <rect x="22" y="150" width="56" height="30" rx="10" fill="#fff" stroke="#e3e8f2"/>
+    <text x="50" y="170" text-anchor="middle" font-size="12" font-weight="800" fill="#2563eb" font-family="inherit">FIBRA</text>
+  </svg>
+) : (
+  <svg class="art" viewBox="0 0 220 220" aria-hidden="true">
+    <defs>
+      <linearGradient id="mA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2faf6"/><stop offset="1" stop-color="#fff1e4"/></linearGradient>
+    </defs>
+    <circle cx="110" cy="110" r="96" fill="url(#mA)"/>
+    <g transform="rotate(-14 80 120)"><path d="M52 70h42l18 18v76a8 8 0 0 1-8 8H52a8 8 0 0 1-8-8V78a8 8 0 0 1 8-8z" fill="#14c2b0"/><rect x="58" y="112" width="40" height="34" rx="6" fill="#ffd27a" stroke="#0d1a3a" stroke-width="2"/></g>
+    <g transform="rotate(10 140 120)"><path d="M112 66h42l18 18v76a8 8 0 0 1-8 8h-52a8 8 0 0 1-8-8V74a8 8 0 0 1 8-8z" fill="#ff9334"/><rect x="118" y="108" width="40" height="34" rx="6" fill="#ffd27a" stroke="#0d1a3a" stroke-width="2"/></g>
+    <g transform="translate(110 46)" stroke="#0d1a3a" stroke-width="5" fill="none" stroke-linecap="round"><path d="M-30 0a42 42 0 0 1 60 0"/><path d="M-18 12a25 25 0 0 1 36 0"/><circle cx="0" cy="24" r="3" fill="#0d1a3a"/></g>
+    <circle cx="186" cy="150" r="18" fill="#fff" stroke="#e3e8f2"/><path d="m178 150 6 6 10-12" stroke="#0b8f82" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+)}
+<style>
+  .art { width: 100%; height: auto; max-width: 220px; }
+</style>

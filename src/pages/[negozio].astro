@@ -1,0 +1,208 @@
+---
+// Pagina negozio: /formigine/ e /maranello/ (contenuti da src/content/negozi).
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import StoreArt from '../components/StoreArt.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import PromoCard from '../components/PromoCard.astro';
+import StoreInfo from '../components/StoreInfo.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Social from '../components/Social.astro';
+import { getNegozi, getGestori, getServizi, getPromo, temaNegozio, daConfermare, telHref, localBusinessLd, type NegozioId } from '../lib/data';
+
+export async function getStaticPaths() {
+  return (await getNegozi()).map((n) => ({ params: { negozio: n.id }, props: { negozio: n } }));
+}
+const { negozio } = Astro.props;
+const id = negozio.id as NegozioId;
+const d = negozio.data;
+const tema = temaNegozio[id] as 't-tim' | 't-mb';
+const gestori = await getGestori(id);
+const servizi = await getServizi({ negozio: id });
+const promo = await getPromo(id);
+const nomeGestore = (gid: string) => gestori.find((g) => g.id === gid)?.data.nome;
+
+// Gestori raggruppati per categoria, nell'ordine in cui compaiono.
+const categorie = [...new Set(gestori.map((g) => g.data.categoria))].map((c) => ({ nome: c, gestori: gestori.filter((g) => g.data.categoria === c) }));
+
+const iconaPer = (t: string) => {
+  const s = t.toLowerCase();
+  if (s.includes('mobile') || s.includes('telefonia')) return 'phone';
+  if (s.includes('fisso') || s.includes('internet')) return 'wifi';
+  if (s.includes('tv') || s.includes('vision')) return 'tv';
+  if (s.includes('energia') || s.includes('luce') || s.includes('gas')) return 'bolt';
+  if (s.includes('antifurt')) return 'shield';
+  if (s.includes('assicura')) return 'umbrella';
+  if (s.includes('assistenza')) return 'headset';
+  return 'star';
+};
+const citta = d.citta.replace(/\s*\(.*\)/, '');
+const ld = localBusinessLd(negozio, Astro.site!);
+---
+<Base
+  title={`${d.nome} — ${d.tipo}`}
+  description={`${d.descrizione} Vieni a trovarci a ${citta}.`}
+  theme={tema}
+  jsonLd={ld}
+>
+  <section class="page-hero">
+    <div class="wrap hero-grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / {d.nome}</nav>
+        <span class="chip">{d.tipo}</span>
+        <h1>{d.nome}</h1>
+        <p class="slogan">{d.slogan}</p>
+        <p class="lead">{d.descrizione}</p>
+        <div class="btn-row">
+          <a href="#modulo" class="btn btn--primary">Prenota o scrivi <Icon name="arrow" /></a>
+          {daConfermare(d.telefono)
+            ? <a href="#dove" class="btn btn--outline"><Icon name="pin" />Dove siamo</a>
+            : <a href={telHref(d.telefono)} class="btn btn--outline"><Icon name="call" />Chiama {d.telefono}</a>}
+        </div>
+        <div class="hero-meta">
+          {d.clienti && <span><Icon name="users" size={18} />{d.clienti}</span>}
+          <span><Icon name="pin" size={18} />{citta}</span>
+          <Social social={d.social} nome={d.nome} size="sm" />
+        </div>
+      </div>
+      <div class="hero-art card glow"><StoreArt tipo={id} /></div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="offerta-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">{id === 'formigine' ? 'Offerta TIM' : 'Cosa trovi'}</span>
+        <h2 id="offerta-title">{id === 'formigine' ? 'Tutto il mondo TIM in un unico negozio' : 'Un solo negozio, tanti operatori a confronto'}</h2>
+      </div>
+      <div class="grid grid-3">
+        {d.offerta.map((o) => (
+          <div class="card glow glow--soft offer">
+            <span class="icon-badge"><Icon name={iconaPer(o.titolo)} /></span>
+            <div><h3>{o.titolo}</h3>{o.testo && <p class="muted">{o.testo}</p>}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {id === 'maranello' && categorie.length > 0 && (
+    <section class="section section--white" aria-labelledby="gestori-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Consulenza multi-operatore</span>
+          <h2 id="gestori-title">I gestori che confrontiamo per te</h2>
+          <p>Ti spieghiamo le differenze e ti aiutiamo a scegliere la proposta più adatta alle tue esigenze.</p>
+        </div>
+        <div class="grid grid-3">
+          {categorie.map((c) => (
+            <div class="card cat">
+              <h3>{c.nome}</h3>
+              <ul>
+                {c.gestori.map((g) => (
+                  <li>
+                    {g.data.logo ? <img src={g.data.logo} alt={g.data.nome} height="28" loading="lazy" /> : <strong>{g.data.nome}</strong>}
+                    {g.data.descrizione && <small>{g.data.descrizione}</small>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {id === 'formigine' && (
+    <section class="section section--white" aria-labelledby="clienti-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Privati e Business</span>
+          <h2 id="clienti-title">Soluzioni per la famiglia e per l’azienda</h2>
+        </div>
+        <div class="grid grid-2">
+          <div class="card glow glow--soft seg">
+            <span class="icon-badge"><Icon name="home" /></span>
+            <h3>Privati</h3>
+            <p class="muted">Mobile, internet casa, TIMVision, TIM Energia e assicurazioni: ti aiutiamo a scegliere e attivare la soluzione per te e la tua famiglia.</p>
+            <a class="link-arrow" href="/contatti/?negozio=formigine&esigenza=telefonia#modulo">Chiedi una consulenza <Icon name="arrow" /></a>
+          </div>
+          <div class="card glow glow--soft seg">
+            <span class="icon-badge"><Icon name="building" /></span>
+            <h3>Business e Partite IVA</h3>
+            <p class="muted">Linee mobili e fisse per la tua attività, con un consulente di riferimento in negozio.</p>
+            <a class="link-arrow" href="/contatti/?negozio=formigine&esigenza=telefonia#modulo">Parla con un consulente <Icon name="arrow" /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {servizi.length > 0 && (
+    <section class="section" aria-labelledby="servizi-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Servizi in negozio</span>
+          <h2 id="servizi-title">Non solo offerte</h2>
+        </div>
+        <div class="grid grid-4">{servizi.map((s) => <ServiceCard servizio={s} negozio={id} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--white" aria-labelledby="promo-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Promozioni</span>
+        <h2 id="promo-title">Le promo di {d.nomeBreve}</h2>
+        <p>Le offerte cambiano spesso: seguici sui social o chiedi in negozio le condizioni aggiornate.</p>
+      </div>
+      {promo.length > 0
+        ? <div class="grid grid-3">{promo.map((p) => <PromoCard promo={p} nomeGestore={nomeGestore(p.data.gestore)} />)}</div>
+        : <p class="center muted">Nessuna promozione pubblicata in questo momento.</p>}
+    </div>
+  </section>
+
+  <section class="section" id="dove" aria-labelledby="dove-title">
+    <div class="wrap two">
+      <div>
+        <span class="eyebrow">Dove siamo</span>
+        <h2 id="dove-title">Vieni a trovarci a {citta}</h2>
+        <StoreInfo negozio={negozio} />
+      </div>
+      <div id="modulo">
+        <ContactForm negozio={id} titolo={`Scrivi a ${d.nomeBreve}`} sottotitolo="Compila il modulo: ti ricontattiamo al più presto." compatto />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-grid { display: grid; grid-template-columns: 1.3fr .7fr; gap: 40px; align-items: center; }
+  h1 { margin-top: 14px; }
+  .slogan { font-weight: 800; color: var(--accent); font-size: 1.2rem; margin-bottom: .6em; }
+  .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 24px; font-weight: 600; font-size: .95rem; }
+  .hero-meta > span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-meta :global(svg) { color: var(--accent); }
+  .hero-art { display: grid; place-items: center; padding: 28px; }
+  .hero-art :global(.art) { max-width: 260px; }
+  .offer { display: flex; gap: 16px; align-items: flex-start; }
+  .offer h3 { margin: 4px 0 4px; }
+  .offer p { margin: 0; font-size: .96rem; }
+  .cat h3 { font-size: 1.05rem; color: var(--accent); }
+  .cat ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .cat li { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: #f6f9fc; border: 1px solid var(--line); }
+  .cat li strong { color: var(--ink); font-size: 1.05rem; }
+  .cat li small { color: var(--muted); }
+  .cat img { height: 28px; width: auto; }
+  .seg { display: flex; flex-direction: column; gap: 10px; }
+  .seg h3 { margin: 6px 0 0; }
+  .seg p { margin: 0; }
+  .two { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(28px, 4vw, 48px); align-items: start; }
+  .two h2 { margin-bottom: 24px; }
+  @media (max-width: 900px) {
+    .hero-grid, .two { grid-template-columns: 1fr; }
+    .hero-art { max-width: 320px; }
+  }
+  @media (max-width: 600px) { .hero-art { display: none; } }
+</style>

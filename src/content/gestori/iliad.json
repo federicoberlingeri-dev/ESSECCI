@@ -1,0 +1,13 @@
+{
+  "nome": "Iliad",
+  "negozi": [
+    "maranello"
+  ],
+  "categoria": "Telefonia e Internet",
+  "descrizione": "",
+  "logo": "",
+  "sito": "",
+  "attivo": true,
+  "striscia": true,
+  "ordine": 11
+}

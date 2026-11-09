@@ -1,0 +1,59 @@
+{
+  "ragioneSociale": "Essecci Multiservice [DA CONFERMARE]",
+  "marchio": "Essecci Multiservice",
+  "piva": "[DA CONFERMARE]",
+  "sedeLegale": "[DA CONFERMARE]",
+  "emailGenerale": "[DA CONFERMARE]",
+  "logo": "",
+  "linkedinAzienda": "",
+  "hero": {
+    "titolo": "Telefonia, energia e servizi:",
+    "evidenza": "due negozi, un unico partner.",
+    "sottotitolo": "Consulenza reale a Formigine e Maranello, per privati e aziende. Il Centro TIM ufficiale e lo Store multi-operatore che confronta per te le migliori offerte.",
+    "foto": ""
+  },
+  "esigenze": [
+    {
+      "id": "telefonia",
+      "etichetta": "Telefonia, Internet e TV",
+      "tipo": "standard",
+      "negozi": [
+        "formigine",
+        "maranello"
+      ]
+    },
+    {
+      "id": "bolletta",
+      "etichetta": "Analisi bolletta luce e gas",
+      "tipo": "bolletta",
+      "negozi": [
+        "formigine",
+        "maranello"
+      ]
+    },
+    {
+      "id": "antifurti",
+      "etichetta": "Antifurti e assicurazioni",
+      "tipo": "standard",
+      "negozi": [
+        "formigine",
+        "maranello"
+      ]
+    },
+    {
+      "id": "assistenza",
+      "etichetta": "Prenotazione assistenza / passaggio dati",
+      "tipo": "appuntamento",
+      "negozi": [
+        "formigine",
+        "maranello"
+      ]
+    },
+    {
+      "id": "drive2store",
+      "etichetta": "Info B2B Drive2Store",
+      "tipo": "b2b",
+      "negozi": []
+    }
+  ]
+}

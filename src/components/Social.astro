@@ -1,0 +1,24 @@
+---
+// Link social di un negozio. Mostra solo i profili compilati; se nessuno è compilato mostra il segnaposto.
+import Icon from './Icon.astro';
+interface Props { social: { facebook?: string; instagram?: string; linkedin?: string }; nome: string; size?: 'sm' | 'md' }
+const { social, nome, size = 'md' } = Astro.props;
+const items = (['facebook', 'instagram', 'linkedin'] as const)
+  .filter((k) => social[k])
+  .map((k) => ({ k, url: social[k]!, label: { facebook: 'Facebook', instagram: 'Instagram', linkedin: 'LinkedIn' }[k] }));
+---
+{items.length ? (
+  <ul class:list={['social', `social--${size}`]}>
+    {items.map((i) => (
+      <li><a href={i.url} target="_blank" rel="noopener" aria-label={`${nome} su ${i.label}`}><Icon name={i.k} size={size === 'sm' ? 18 : 20} /></a></li>
+    ))}
+  </ul>
+) : (
+  <span class="placeholder-note">Social [DA CONFERMARE]</span>
+)}
+<style>
+  .social { display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
+  .social a { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; color: var(--accent, var(--ink)); background: #fff; border: 1px solid var(--line); transition: transform .2s, box-shadow .2s; }
+  .social--sm a { width: 36px; height: 36px; border-radius: 10px; }
+  .social a:hover { transform: translateY(-2px); box-shadow: 0 8px 18px -10px var(--g1, var(--brand)); }
+</style>

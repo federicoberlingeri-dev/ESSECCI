@@ -1,0 +1,13 @@
+{
+  "titolo": "[ESEMPIO] Promo in corso al Centro TIM",
+  "negozio": "formigine",
+  "gestore": "tim",
+  "descrizione": "Questa è una promo di esempio: sostituiscila dal pannello di gestione con un’offerta reale.",
+  "immagine": "",
+  "etichetta": "Esempio",
+  "scadenza": "",
+  "note": "",
+  "esigenza": "telefonia",
+  "attiva": true,
+  "ordine": 1
+}

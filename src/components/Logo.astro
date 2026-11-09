@@ -1,0 +1,25 @@
+---
+// Logo: usa l'immagine caricata nelle Impostazioni, altrimenti il logotipo testuale provvisorio.
+import { getImpostazioni } from '../lib/data';
+const imp = await getImpostazioni();
+---
+<a href="/" class="logo" aria-label={`${imp.marchio} — Home`}>
+  {imp.logo ? (
+    <img src={imp.logo} alt={imp.marchio} height="44" />
+  ) : (
+    <>
+      <span class="logo-mark" aria-hidden="true">
+        <img src="/favicon.svg" width="40" height="40" alt="" />
+      </span>
+      <span class="logo-text"><strong>ESSECCI</strong><small>MULTISERVICE</small></span>
+    </>
+  )}
+</a>
+<style>
+  .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); flex: none; }
+  .logo img { height: 44px; width: auto; }
+  .logo-mark img { height: 40px; }
+  .logo-text { display: grid; line-height: 1; }
+  .logo-text strong { font-size: 1.32rem; font-weight: 800; letter-spacing: .02em; }
+  .logo-text small { font-size: .62rem; font-weight: 700; letter-spacing: .32em; color: var(--muted); margin-top: 3px; }
+</style>

@@ -1,0 +1,13 @@
+{
+  "titolo": "Analisi bollette luce e gas",
+  "descrizione": "Portaci la bolletta, o caricala online: la analizziamo con te per capire dove si può risparmiare.",
+  "icona": "bolt",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "bolletta",
+  "home": true,
+  "attivo": true,
+  "ordine": 3
+}

@@ -1,0 +1,13 @@
+{
+  "titolo": "Promo combinate e smartphone",
+  "descrizione": "Offerte che uniscono linea, smartphone e servizi in un’unica soluzione.",
+  "icona": "phone",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "telefonia",
+  "home": true,
+  "attivo": true,
+  "ordine": 4
+}

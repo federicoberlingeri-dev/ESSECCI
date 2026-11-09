@@ -1,0 +1,13 @@
+{
+  "titolo": "Assistenza in negozio",
+  "descrizione": "Un consulente ti segue su linee, dispositivi, contratti e pratiche.",
+  "icona": "headset",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "assistenza",
+  "home": false,
+  "attivo": true,
+  "ordine": 7
+}

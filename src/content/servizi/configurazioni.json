@@ -1,0 +1,13 @@
+{
+  "titolo": "Configurazione dispositivi",
+  "descrizione": "Configuriamo smartphone, modem, e-mail e app: esci dal negozio pronto a usarli.",
+  "icona": "settings",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "assistenza",
+  "home": true,
+  "attivo": true,
+  "ordine": 2
+}

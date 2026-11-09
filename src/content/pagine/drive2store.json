@@ -1,0 +1,52 @@
+{
+  "titolo": "Drive2Store",
+  "sottotitolo": "Portiamo clienti reali nel tuo punto vendita.",
+  "introduzione": "Drive2Store è il servizio B2B di Essecci Multiservice per i negozi che vogliono più appuntamenti in store. Gestiamo per te campagne con operatore telefonico dedicato e SMS personalizzati, fino alla presa dell’appuntamento.",
+  "destinatari": [
+    "Negozi di telefonia",
+    "Punti vendita energia",
+    "Agenzie assicurative",
+    "Altre attività con clienti in negozio"
+  ],
+  "strumenti": [
+    {
+      "titolo": "Operatore telefonico dedicato",
+      "testo": "Un operatore contatta i clienti per conto del tuo negozio.",
+      "icona": "headset"
+    },
+    {
+      "titolo": "SMS personalizzati",
+      "testo": "Messaggi su misura con il nome e l’offerta del tuo punto vendita.",
+      "icona": "chat"
+    },
+    {
+      "titolo": "Presa appuntamento",
+      "testo": "I contatti interessati vengono fissati in agenda e accolti nel tuo store.",
+      "icona": "calendar"
+    }
+  ],
+  "passi": [
+    {
+      "titolo": "Analisi",
+      "testo": "Ci racconti il tuo negozio, i tuoi obiettivi e la tua offerta."
+    },
+    {
+      "titolo": "Campagna",
+      "testo": "Prepariamo insieme messaggi SMS e script dell’operatore."
+    },
+    {
+      "titolo": "Contatto",
+      "testo": "Operatore e SMS raggiungono i clienti."
+    },
+    {
+      "titolo": "Appuntamento in store",
+      "testo": "Ricevi appuntamenti fissati con clienti interessati."
+    }
+  ],
+  "vantaggi": [
+    "Un solo referente per tutta la campagna",
+    "Comunicazione personalizzata sul tuo punto vendita",
+    "Obiettivo concreto: clienti in negozio"
+  ],
+  "cta": "Raccontaci il tuo negozio: ti ricontattiamo per costruire la campagna."
+}

@@ -1,0 +1,57 @@
+{
+  "nome": "Store Multibrand Maranello",
+  "nomeBreve": "Multibrand Maranello",
+  "tipo": "Consulenza multi-operatore",
+  "slogan": "Libertà di scelta e confronto",
+  "descrizione": "Lo store multi-operatore di Maranello: confrontiamo per te le proposte dei principali gestori di telefonia, internet, TV, luce e gas, e ti aiutiamo con antifurti, assicurazioni e assistenza.",
+  "clienti": "Privati e aziende [DA CONFERMARE]",
+  "offerta": [
+    {
+      "titolo": "Telefonia e Internet",
+      "testo": "Mobile e connessione casa a confronto tra più operatori."
+    },
+    {
+      "titolo": "TV",
+      "testo": "Intrattenimento e pay TV."
+    },
+    {
+      "titolo": "Luce e Gas",
+      "testo": "Comparazione tra più fornitori di energia."
+    },
+    {
+      "titolo": "Sistemi antifurto",
+      "testo": "Soluzioni per la sicurezza di casa e attività."
+    },
+    {
+      "titolo": "Assicurazioni",
+      "testo": "Coperture per persone, casa e beni."
+    },
+    {
+      "titolo": "Assistenza",
+      "testo": "Supporto in negozio su linee, dispositivi e contratti."
+    }
+  ],
+  "indirizzo": "Via [DA CONFERMARE]",
+  "citta": "Maranello (MO)",
+  "telefono": "[DA CONFERMARE]",
+  "whatsapp": "",
+  "email": "[DA CONFERMARE]",
+  "orari": [
+    {
+      "giorni": "Lunedì – Sabato",
+      "ore": "[DA CONFERMARE]"
+    },
+    {
+      "giorni": "Domenica",
+      "ore": "[DA CONFERMARE]"
+    }
+  ],
+  "mappa": "",
+  "foto": "",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "linkedin": ""
+  },
+  "ordine": 2
+}

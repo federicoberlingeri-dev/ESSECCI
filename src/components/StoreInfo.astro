@@ -1,0 +1,75 @@
+---
+// Scheda punto vendita: indirizzo, orari, contatti, social, mappa (caricata solo su richiesta, per privacy).
+import Icon from './Icon.astro';
+import Social from './Social.astro';
+import { temaNegozio, daConfermare, telHref, waHref, type NegozioId } from '../lib/data';
+import type { CollectionEntry } from 'astro:content';
+interface Props { negozio: CollectionEntry<'negozi'>; mappa?: boolean }
+const { negozio, mappa = true } = Astro.props;
+const id = negozio.id as NegozioId;
+const d = negozio.data;
+const indirizzoNoto = !daConfermare(d.indirizzo);
+const q = encodeURIComponent(`${d.nome}, ${d.indirizzo}, ${d.citta}`);
+const indicazioni = d.mappa || `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+const embed = `https://www.google.com/maps?q=${q}&output=embed`;
+---
+<div class:list={['store-info card glow glow--soft', temaNegozio[id]]}>
+  <h3><span class="dot" aria-hidden="true" />{d.nome}</h3>
+  <dl>
+    <div><dt><Icon name="pin" size={20} /><span class="sr-only">Indirizzo</span></dt><dd>{d.indirizzo}<br />{d.citta}</dd></div>
+    <div><dt><Icon name="call" size={20} /><span class="sr-only">Telefono</span></dt><dd>{daConfermare(d.telefono) ? d.telefono : <a href={telHref(d.telefono)}>{d.telefono}</a>}</dd></div>
+    {d.whatsapp && <div><dt><Icon name="whatsapp" size={20} /><span class="sr-only">WhatsApp</span></dt><dd><a href={waHref(d.whatsapp)} target="_blank" rel="noopener">Scrivici su WhatsApp</a></dd></div>}
+    <div><dt><Icon name="mail" size={20} /><span class="sr-only">Email</span></dt><dd>{daConfermare(d.email) ? d.email : <a href={`mailto:${d.email}`}>{d.email}</a>}</dd></div>
+    <div><dt><Icon name="clock" size={20} /><span class="sr-only">Orari</span></dt>
+      <dd><table class="hours"><tbody>{d.orari.map((o) => <tr><th scope="row">{o.giorni}</th><td>{o.ore}</td></tr>)}</tbody></table></dd>
+    </div>
+  </dl>
+  <Social social={d.social} nome={d.nome} />
+  {mappa && (
+    <div class="map" data-map={indirizzoNoto ? embed : undefined}>
+      {indirizzoNoto ? (
+        <button type="button" class="map-btn" data-map-load>
+          <Icon name="pin" /> <span>Mostra la mappa</span>
+          <small>Caricando la mappa accetti i cookie di Google Maps</small>
+        </button>
+      ) : (
+        <div class="map-btn is-off"><Icon name="pin" /><span>Mappa disponibile dopo la conferma dell’indirizzo</span></div>
+      )}
+    </div>
+  )}
+  <div class="btn-row">
+    {indirizzoNoto && <a class="btn btn--outline btn--sm" href={indicazioni} target="_blank" rel="noopener">Indicazioni stradali <Icon name="external" /></a>}
+    <a class="btn btn--primary btn--sm" href={`/contatti/?negozio=${id}#modulo`}>Prenota o scrivi</a>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-map-load]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const box = btn.closest<HTMLElement>('[data-map]')!;
+      const f = document.createElement('iframe');
+      f.src = box.dataset.map!; f.loading = 'lazy'; f.title = 'Mappa del negozio'; f.referrerPolicy = 'no-referrer-when-downgrade';
+      box.replaceChildren(f);
+    });
+  });
+</script>
+
+<style>
+  .store-info { display: flex; flex-direction: column; gap: 18px; }
+  h3 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 1.3rem; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); }
+  dl { margin: 0; display: grid; gap: 12px; }
+  dl > div { display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+  dt { color: var(--accent); padding-top: 2px; }
+  dd { margin: 0; }
+  dd a { color: var(--ink); font-weight: 600; }
+  .hours { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  .hours th { text-align: left; font-weight: 600; padding: 2px 16px 2px 0; color: var(--ink); }
+  .hours td { padding: 2px 0; }
+  .map { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: linear-gradient(135deg, #f1f5fb, #eaf7f5); }
+  .map :global(iframe) { width: 100%; height: 100%; border: 0; }
+  .map-btn { width: 100%; height: 100%; border: 0; background: transparent; display: grid; place-content: center; justify-items: center; gap: 6px; font: inherit; font-weight: 700; color: var(--ink); cursor: pointer; padding: 16px; text-align: center; }
+  .map-btn small { font-weight: 500; color: var(--muted); font-size: .78rem; }
+  .map-btn :global(svg) { color: var(--accent); width: 30px; height: 30px; }
+  .map-btn.is-off { cursor: default; color: var(--muted); font-weight: 600; font-size: .92rem; }
+</style>

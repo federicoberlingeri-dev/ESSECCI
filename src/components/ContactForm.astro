@@ -1,0 +1,308 @@
+---
+// Modulo contatto "intelligente": negozio → esigenza → campi dinamici.
+// Invio con Netlify Forms. Smistamento: un form per destinazione (contatti-formigine / contatti-maranello / contatti-drive2store),
+// a ciascuno si associa la propria email di notifica nel pannello Netlify. Le "sagome" dei form sono in public/moduli-netlify.html.
+import Icon from './Icon.astro';
+import { getImpostazioni, getNegozi } from '../lib/data';
+
+interface Props { negozio?: 'formigine' | 'maranello'; esigenza?: string; titolo?: string; sottotitolo?: string; compatto?: boolean }
+const { negozio = '', esigenza = '', titolo = 'Scrivici o prenota in negozio', sottotitolo = 'Scegli il negozio e di cosa hai bisogno: la tua richiesta arriva direttamente alla persona giusta.', compatto = false } = Astro.props;
+const imp = await getImpostazioni();
+const negozi = await getNegozi();
+const esigenze = imp.esigenze;
+---
+<div class:list={['cf card glow', compatto && 'cf--compact']} data-cf data-preset-negozio={negozio} data-preset-esigenza={esigenza}>
+  <div class="cf-head">
+    <h2 class="cf-title">{titolo}</h2>
+    <p class="muted">{sottotitolo}</p>
+  </div>
+
+  <form name="contatti-formigine" method="POST" action="/grazie/" enctype="multipart/form-data" novalidate data-cf-form>
+    <input type="hidden" name="form-name" value="contatti-formigine" />
+    <input type="hidden" name="promo" value="" />
+    <input type="hidden" name="pagina" value="" />
+    <p class="hp" aria-hidden="true"><label>Non compilare: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+
+    <fieldset class="step" data-step="negozio">
+      <legend class="label"><span class="num">1</span> Per quale negozio?</legend>
+      <div class="choices">
+        {negozi.map((n) => (
+          <label class:list={['choice', n.id === 'formigine' ? 't-tim' : 't-mb']}>
+            <input type="radio" name="negozio" value={n.id} required />
+            <span class="choice-box">
+              <span class="dot" aria-hidden="true" />
+              <span><strong>{n.data.nomeBreve}</strong><small>{n.data.tipo}</small></span>
+            </span>
+          </label>
+        ))}
+      </div>
+      <p class="error-msg" data-err="negozio" hidden>Scegli un negozio.</p>
+    </fieldset>
+
+    <div class="field step">
+      <label for="cf-esigenza" class="label"><span class="num">2</span> Di cosa hai bisogno?</label>
+      <select id="cf-esigenza" name="esigenza" class="select" required>
+        <option value="">Seleziona un’esigenza…</option>
+        {esigenze.map((e) => <option value={e.id} data-tipo={e.tipo} data-negozi={e.negozi.join(',')}>{e.etichetta}</option>)}
+      </select>
+      <p class="error-msg" data-err="esigenza" hidden>Scegli un’esigenza.</p>
+    </div>
+
+    <!-- Campi dinamici -->
+    <div class="dyn" data-show="bolletta" hidden>
+      <div class="grid-fields">
+        <div class="field">
+          <label for="cf-fornitura" class="label">Tipo di fornitura</label>
+          <select id="cf-fornitura" name="fornitura" class="select">
+            <option value="Luce e gas">Luce e gas</option><option value="Luce">Solo luce</option><option value="Gas">Solo gas</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="label">Allega la bolletta <span class="muted">(facoltativo)</span></span>
+          <label class="upload" for="cf-bolletta">
+            <Icon name="upload" /><span data-file-label>Carica PDF o foto</span>
+            <input id="cf-bolletta" type="file" name="bolletta" accept=".pdf,image/*" />
+          </label>
+          <span class="hint">PDF, JPG o PNG, massimo 8 MB. Puoi anche portarla in negozio.</span>
+          <p class="error-msg" data-err="bolletta" hidden>Il file supera 8 MB: scegline uno più leggero.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dyn" data-show="appuntamento" hidden>
+      <div class="grid-fields">
+        <div class="field">
+          <label for="cf-data" class="label">Giorno preferito</label>
+          <input id="cf-data" type="date" name="data_preferita" class="input" />
+        </div>
+        <div class="field">
+          <label for="cf-fascia" class="label">Fascia oraria</label>
+          <select id="cf-fascia" name="fascia_oraria" class="select">
+            <option value="Indifferente">Indifferente</option><option value="Mattina">Mattina</option><option value="Pomeriggio">Pomeriggio</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">Ti ricontattiamo per confermare l’appuntamento.</p>
+    </div>
+
+    <div class="dyn" data-show="b2b" hidden>
+      <div class="grid-fields">
+        <div class="field">
+          <label for="cf-azienda" class="label">Nome del negozio / azienda *</label>
+          <input id="cf-azienda" name="azienda" class="input" autocomplete="organization" data-req-b2b />
+          <p class="error-msg" data-err="azienda" hidden>Indica il nome dell’azienda.</p>
+        </div>
+        <div class="field">
+          <label for="cf-settore" class="label">Settore</label>
+          <select id="cf-settore" name="settore" class="select">
+            <option value="Telefonia">Telefonia</option><option value="Energia">Energia</option><option value="Assicurazioni">Assicurazioni</option><option value="Altro">Altro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cf-citta" class="label">Città</label>
+          <input id="cf-citta" name="citta_azienda" class="input" autocomplete="address-level2" />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-fields">
+      <div class="field">
+        <label for="cf-nome" class="label">Nome e cognome *</label>
+        <input id="cf-nome" name="nome" class="input" autocomplete="name" required />
+        <p class="error-msg" data-err="nome" hidden>Inserisci nome e cognome.</p>
+      </div>
+      <div class="field">
+        <label for="cf-tel" class="label">Telefono *</label>
+        <input id="cf-tel" name="telefono" type="tel" class="input" autocomplete="tel" inputmode="tel" required />
+        <p class="error-msg" data-err="telefono" hidden>Inserisci un numero valido.</p>
+      </div>
+      <div class="field">
+        <label for="cf-email" class="label">Email</label>
+        <input id="cf-email" name="email" type="email" class="input" autocomplete="email" />
+        <p class="error-msg" data-err="email" hidden>Controlla l’indirizzo email.</p>
+      </div>
+    </div>
+    <div class="field">
+      <label for="cf-msg" class="label">Messaggio</label>
+      <textarea id="cf-msg" name="messaggio" class="textarea" rows="4" placeholder="Raccontaci brevemente la tua esigenza"></textarea>
+    </div>
+
+    <label class="consent">
+      <input type="checkbox" name="privacy" value="Accettata" required />
+      <span>Ho letto l’<a href="/privacy/" target="_blank">informativa privacy</a> e acconsento al trattamento dei dati per essere ricontattato. *</span>
+    </label>
+    <p class="error-msg" data-err="privacy" hidden>Serve il consenso per inviare la richiesta.</p>
+
+    <div class="submit-row">
+      <button type="submit" class="btn btn--primary" data-submit>Invia richiesta <Icon name="arrow" /></button>
+      <p class="dest muted" data-dest aria-live="polite"></p>
+    </div>
+    <p class="form-status" data-status role="status" aria-live="polite"></p>
+  </form>
+
+  <div class="cf-done" data-done hidden tabindex="-1">
+    <span class="icon-badge"><Icon name="check" /></span>
+    <h3>Richiesta inviata, grazie!</h3>
+    <p class="muted">Ti ricontatteremo al più presto. <span data-done-store></span></p>
+    <button type="button" class="btn btn--ghost btn--sm" data-again>Invia un’altra richiesta</button>
+  </div>
+</div>
+
+<script>
+  const MAX = 8 * 1024 * 1024;
+  const NOMI: Record<string, string> = { formigine: 'Centro TIM Formigine', maranello: 'Store Multibrand Maranello' };
+
+  document.querySelectorAll<HTMLElement>('[data-cf]').forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>('[data-cf-form]')!;
+    const formName = form.querySelector<HTMLInputElement>('input[name="form-name"]')!;
+    const stepNegozio = form.querySelector<HTMLElement>('[data-step="negozio"]')!;
+    const select = form.querySelector<HTMLSelectElement>('select[name="esigenza"]')!;
+    const dyn = form.querySelectorAll<HTMLElement>('[data-show]');
+    const file = form.querySelector<HTMLInputElement>('input[name="bolletta"]')!;
+    const fileLabel = form.querySelector<HTMLElement>('[data-file-label]')!;
+    const dest = form.querySelector<HTMLElement>('[data-dest]')!;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const done = root.querySelector<HTMLElement>('[data-done]')!;
+    const radios = () => form.querySelectorAll<HTMLInputElement>('input[name="negozio"]');
+    const negozio = () => Array.from(radios()).find((r) => r.checked)?.value ?? '';
+    const tipo = () => select.selectedOptions[0]?.dataset.tipo ?? '';
+
+    const err = (k: string, on: boolean) => {
+      const el = form.querySelector<HTMLElement>(`[data-err="${k}"]`);
+      if (el) el.hidden = !on;
+      const input = form.querySelector<HTMLElement>(`[name="${k}"]`);
+      if (input && k !== 'negozio' && k !== 'privacy') input.setAttribute('aria-invalid', String(on));
+    };
+
+    function update() {
+      const t = tipo();
+      const n = negozio();
+      const b2b = t === 'b2b';
+      stepNegozio.hidden = b2b;
+      radios().forEach((r) => (r.required = !b2b));
+      // Le esigenze non disponibili nel negozio scelto vengono disabilitate.
+      Array.from(select.options).forEach((o) => {
+        if (!o.value) return;
+        const ok = o.dataset.tipo === 'b2b' || !n || (o.dataset.negozi ?? '').split(',').includes(n);
+        o.disabled = !ok;
+        if (!ok && o.selected) select.value = '';
+      });
+      dyn.forEach((d) => {
+        const on = d.dataset.show === tipo();
+        d.hidden = !on;
+        d.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((i) => (i.disabled = !on));
+      });
+      formName.value = b2b ? 'contatti-drive2store' : n === 'maranello' ? 'contatti-maranello' : 'contatti-formigine';
+      dest.textContent = b2b ? 'La richiesta andrà al team Drive2Store.' : n ? `La richiesta andrà a: ${NOMI[n]}.` : '';
+    }
+
+    // Preimpostazioni: attributi del componente e parametri URL (?negozio=…&esigenza=…&promo=…)
+    const url = new URLSearchParams(location.search);
+    const pNeg = url.get('negozio') || root.dataset.presetNegozio;
+    const pEsi = url.get('esigenza') || root.dataset.presetEsigenza;
+    if (pNeg) radios().forEach((r) => (r.checked = r.value === pNeg));
+    if (pEsi && select.querySelector(`option[value="${CSS.escape(pEsi)}"]`)) select.value = pEsi;
+    const promo = url.get('promo');
+    if (promo) {
+      form.querySelector<HTMLInputElement>('input[name="promo"]')!.value = promo;
+      const msg = form.querySelector<HTMLTextAreaElement>('textarea[name="messaggio"]')!;
+      if (!msg.value) msg.value = `Vorrei informazioni sulla promo: ${promo}`;
+    }
+    form.querySelector<HTMLInputElement>('input[name="pagina"]')!.value = location.pathname;
+    const today = new Date().toISOString().slice(0, 10);
+    form.querySelector<HTMLInputElement>('input[name="data_preferita"]')!.min = today;
+    update();
+
+    form.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name === 'negozio' || t.name === 'esigenza') update();
+      if (t.name) err(t.name, false);
+    });
+    file.addEventListener('change', () => {
+      const f = file.files?.[0];
+      fileLabel.textContent = f ? f.name : 'Carica PDF o foto';
+      err('bolletta', !!f && f.size > MAX);
+    });
+
+    function validate() {
+      let first: HTMLElement | null = null;
+      const fail = (k: string, el?: HTMLElement | null) => { err(k, true); first ??= el ?? form.querySelector(`[name="${k}"]`); };
+      const b2b = tipo() === 'b2b';
+      ['negozio', 'esigenza', 'nome', 'telefono', 'email', 'privacy', 'azienda', 'bolletta'].forEach((k) => err(k, false));
+      if (!b2b && !negozio()) fail('negozio', radios()[0]);
+      if (!select.value) fail('esigenza');
+      const g = (n: string) => (form.elements.namedItem(n) as HTMLInputElement).value.trim();
+      if (b2b && !g('azienda')) fail('azienda');
+      if (g('nome').length < 2) fail('nome');
+      if (g('telefono').replace(/[^\d]/g, '').length < 6) fail('telefono');
+      if (g('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(g('email'))) fail('email');
+      if (!(form.elements.namedItem('privacy') as HTMLInputElement).checked) fail('privacy');
+      const f = file.files?.[0];
+      if (tipo() === 'bolletta' && f && f.size > MAX) fail('bolletta', file);
+      first?.focus();
+      return !first;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      if (!validate()) { status.textContent = 'Controlla i campi evidenziati.'; return; }
+      const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+      btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.textContent = 'Invio in corso…';
+      try {
+        const data = new FormData(form);
+        if (tipo() === 'b2b') data.delete('negozio');
+        if (!file.files?.length) data.delete('bolletta');
+        const res = await fetch('/', { method: 'POST', body: data });
+        if (!res.ok) throw new Error(String(res.status));
+        const n = negozio();
+        root.querySelector<HTMLElement>('[data-done-store]')!.textContent = tipo() === 'b2b' ? 'Il team Drive2Store ha ricevuto la tua richiesta.' : n ? `${NOMI[n]} ha ricevuto la tua richiesta.` : '';
+        form.hidden = true; done.hidden = false; done.focus();
+        form.reset(); fileLabel.textContent = 'Carica PDF o foto'; update();
+      } catch {
+        status.textContent = 'Invio non riuscito. Riprova tra poco oppure chiamaci direttamente.';
+      } finally {
+        btn.disabled = false; btn.innerHTML = btn.dataset.label ?? 'Invia richiesta';
+      }
+    });
+    root.querySelector('[data-again]')!.addEventListener('click', () => { done.hidden = true; form.hidden = false; });
+  });
+</script>
+
+<style>
+  .cf-head { margin-bottom: 22px; }
+  .cf-title { font-size: clamp(1.5rem, 2.8vw, 2rem); margin-bottom: .3em; }
+  .cf-head p { margin: 0; }
+  form { display: grid; gap: 20px; }
+  .hp { position: absolute; left: -9999px; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  .step[hidden] { display: none; }
+  .label { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--ink); margin-bottom: 8px; padding: 0; }
+  .num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font-size: .82rem; color: #fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .choice input { position: absolute; opacity: 0; pointer-events: none; }
+  .choice-box { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: #fbfcff; cursor: pointer; transition: border-color .2s, box-shadow .2s, background .2s; height: 100%; }
+  .choice-box strong { display: block; color: var(--ink); }
+  .choice-box small { color: var(--muted); font-size: .82rem; }
+  .choice .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; background: linear-gradient(135deg, var(--g1), var(--g2)); box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--line); }
+  .choice input:checked + .choice-box { border-color: var(--g1); background: #fff; box-shadow: 0 10px 26px -14px var(--g1), 0 0 0 3px color-mix(in srgb, var(--g1) 18%, transparent); }
+  .choice input:focus-visible + .choice-box { outline: 3px solid var(--brand-2); outline-offset: 2px; }
+  .grid-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+  .dyn { padding: 18px; border-radius: 16px; background: linear-gradient(135deg, #f3f8ff, #f2fbf9); border: 1px dashed #cfe0f5; display: grid; gap: 10px; }
+  .dyn[hidden] { display: none; }
+  .upload { position: relative; display: flex; align-items: center; gap: 10px; min-height: 50px; padding: .7em 1em; border-radius: 12px; border: 1.5px dashed var(--brand-2); background: #fff; color: var(--brand); font-weight: 700; cursor: pointer; overflow: hidden; }
+  .upload span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload:focus-within { outline: 3px solid var(--brand-2); outline-offset: 2px; }
+  .hint { font-size: .82rem; color: var(--muted); margin: 0; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; }
+  .consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--brand); flex: none; }
+  .submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+  .dest { margin: 0; font-size: .9rem; }
+  .form-status { margin: 0; font-weight: 700; color: var(--err); }
+  .form-status:empty { display: none; }
+  .cf-done { text-align: center; display: grid; justify-items: center; gap: 10px; padding: 24px 0; }
+  .cf-done .icon-badge { color: var(--ok); }
+  .cf-done h3 { margin: 6px 0 0; }
+  @media (max-width: 520px) { .choices { grid-template-columns: 1fr; } }
+</style>

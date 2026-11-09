@@ -1,0 +1,13 @@
+{
+  "nome": "1Mobile",
+  "negozi": [
+    "maranello"
+  ],
+  "categoria": "Telefonia mobile",
+  "descrizione": "",
+  "logo": "",
+  "sito": "",
+  "attivo": true,
+  "striscia": true,
+  "ordine": 14
+}

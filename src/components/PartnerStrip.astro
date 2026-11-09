@@ -1,0 +1,29 @@
+---
+// Striscia "I nostri partner": si aggiorna da sola quando si aggiunge/disattiva un gestore.
+import { getGestori } from '../lib/data';
+interface Props { titolo?: string }
+const { titolo = 'I nostri partner' } = Astro.props;
+const gestori = (await getGestori()).filter((g) => g.data.striscia);
+---
+<section class="partners" aria-labelledby="partners-title">
+  <div class="wrap">
+    <h2 id="partners-title" class="title">{titolo}</h2>
+    <ul>
+      {gestori.map((g) => (
+        <li class:list={[g.data.negozi.includes('formigine') ? 't-tim' : 't-mb']} title={g.data.categoria}>
+          {g.data.logo ? <img src={g.data.logo} alt={g.data.nome} loading="lazy" height="34" /> : <span>{g.data.nome}</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+<style>
+  .partners { background: #fff; border-block: 1px solid var(--line); padding-block: 36px; }
+  .title { font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 22px; font-weight: 700; }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 40px; align-items: center; }
+  li { display: flex; align-items: center; min-height: 40px; }
+  li span { font-size: 1.25rem; font-weight: 800; letter-spacing: -.01em; color: #8a95ad; transition: color .2s; }
+  li:hover span { color: var(--accent); }
+  li img { height: 34px; width: auto; filter: grayscale(1); opacity: .75; transition: filter .2s, opacity .2s; }
+  li:hover img { filter: none; opacity: 1; }
+</style>

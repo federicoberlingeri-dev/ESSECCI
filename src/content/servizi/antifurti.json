@@ -1,0 +1,12 @@
+{
+  "titolo": "Sistemi antifurto",
+  "descrizione": "Soluzioni di sicurezza per proteggere casa e attività.",
+  "icona": "shield",
+  "negozi": [
+    "maranello"
+  ],
+  "esigenza": "antifurti",
+  "home": false,
+  "attivo": true,
+  "ordine": 5
+}

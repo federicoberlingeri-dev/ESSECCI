@@ -1,0 +1,13 @@
+{
+  "nome": "Tiscali (tramite SegnoVerde)",
+  "negozi": [
+    "maranello"
+  ],
+  "categoria": "Telefonia e Internet",
+  "descrizione": "In arrivo: linee internet SegnoVerde tramite Tiscali. Attivare quando disponibile.",
+  "logo": "",
+  "sito": "",
+  "attivo": false,
+  "striscia": false,
+  "ordine": 23
+}

@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { getImpostazioni } from '../lib/data';
+const imp = await getImpostazioni();
+---
+<Base title="Privacy policy" description="Informativa sul trattamento dei dati personali raccolti tramite il sito.">
+  <section class="page-hero"><div class="wrap legal-wrap">
+    <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / Privacy policy</nav>
+    <h1>Informativa privacy</h1>
+    <p class="placeholder-note">Bozza da far verificare al consulente privacy dell’azienda prima della pubblicazione definitiva.</p>
+  </div></section>
+  <section class="section section--tight"><div class="wrap legal-wrap legal card">
+    <h2>1. Titolare del trattamento</h2>
+    <p>{imp.ragioneSociale} — P.IVA {imp.piva} — Sede legale: {imp.sedeLegale} — Email: {imp.emailGenerale}.</p>
+    <h2>2. Dati raccolti</h2>
+    <p>Tramite i moduli di contatto raccogliamo i dati che ci fornisci volontariamente: nome e cognome, telefono, email, negozio e argomento della richiesta, messaggio, eventuali dati aziendali (per Drive2Store), preferenze di appuntamento e, se scegli di allegarla, la copia della bolletta luce/gas con i dati in essa contenuti.</p>
+    <h2>3. Finalità e base giuridica</h2>
+    <p>I dati sono trattati esclusivamente per rispondere alla tua richiesta, ricontattarti, fissare un appuntamento ed elaborare un’analisi o una proposta commerciale da te richiesta (art. 6.1.b GDPR — misure precontrattuali adottate su richiesta dell’interessato). Non usiamo i dati per finalità di marketing senza un tuo consenso specifico.</p>
+    <h2>4. Modalità e destinatari</h2>
+    <p>I dati sono trattati con strumenti elettronici dal personale del negozio a cui è indirizzata la richiesta. Il sito e i moduli sono ospitati dal fornitore di hosting Netlify, Inc., che agisce come responsabile del trattamento; il trasferimento di dati verso gli USA avviene sulla base delle garanzie previste dal GDPR (EU-U.S. Data Privacy Framework / clausole contrattuali standard). I dati non sono diffusi.</p>
+    <h2>5. Conservazione</h2>
+    <p>I dati sono conservati per il tempo necessario a gestire la richiesta e per un periodo massimo di [DA CONFERMARE] mesi, salvo l’instaurarsi di un rapporto contrattuale.</p>
+    <h2>6. I tuoi diritti</h2>
+    <p>Puoi chiedere in qualsiasi momento accesso, rettifica, cancellazione, limitazione od opposizione al trattamento e la portabilità dei dati scrivendo a {imp.emailGenerale}. Hai inoltre diritto di proporre reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>
+    <h2>7. Cookie</h2>
+    <p>Per l’uso dei cookie consulta la <a href="/cookie/">cookie policy</a>.</p>
+  </div></section>
+</Base>
+<style>
+  .legal-wrap { max-width: 820px; }
+  .legal h2 { font-size: 1.2rem; margin-top: 1.6em; }
+  .legal h2:first-child { margin-top: 0; }
+</style>

@@ -1,0 +1,13 @@
+{
+  "titolo": "Passaggio dati",
+  "descrizione": "Trasferiamo contatti, foto, chat e app dal vecchio al nuovo smartphone, in sicurezza.",
+  "icona": "transfer",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "assistenza",
+  "home": true,
+  "attivo": true,
+  "ordine": 1
+}

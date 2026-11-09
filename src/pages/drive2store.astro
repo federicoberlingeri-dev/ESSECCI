@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { getPagina } from '../lib/data';
+const p = await getPagina('drive2store');
+---
+<Base title={`${p.titolo} — Servizio B2B per negozi`} description={`${p.sottotitolo} ${p.introduzione}`.slice(0, 160)}>
+  <section class="page-hero">
+    <div class="wrap hero-grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / B2B Drive2Store</nav>
+        <span class="eyebrow">Servizio B2B</span>
+        <h1>{p.titolo}<span class="sub">{p.sottotitolo}</span></h1>
+        <p class="lead">{p.introduzione}</p>
+        <div class="btn-row">
+          <a href="#modulo" class="btn btn--primary">Richiedi informazioni <Icon name="arrow" /></a>
+          <a href="#come-funziona" class="btn btn--outline">Come funziona</a>
+        </div>
+      </div>
+      <div class="card glow flow" aria-hidden="true">
+        <div class="flow-step"><span class="icon-badge"><Icon name="headset" /></span><span>Operatore</span></div>
+        <div class="flow-line" />
+        <div class="flow-step"><span class="icon-badge"><Icon name="chat" /></span><span>SMS</span></div>
+        <div class="flow-line" />
+        <div class="flow-step"><span class="icon-badge"><Icon name="calendar" /></span><span>Appuntamento</span></div>
+        <div class="flow-line" />
+        <div class="flow-step is-goal"><span class="icon-badge"><Icon name="store" /></span><span>Cliente in store</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="per-chi">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Per chi è</span><h2 id="per-chi">Pensato per i punti vendita</h2></div>
+      <ul class="targets">
+        {p.destinatari.map((d) => <li class="card glow glow--soft"><Icon name="target" />{d}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--white" aria-labelledby="strumenti">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Cosa facciamo</span><h2 id="strumenti">Tre strumenti, un obiettivo</h2></div>
+      <div class="grid grid-3">
+        {p.strumenti.map((s) => (
+          <div class="card glow glow--soft tool">
+            <span class="icon-badge"><Icon name={s.icona} /></span>
+            <h3>{s.titolo}</h3>
+            <p class="muted">{s.testo}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="come-funziona" aria-labelledby="come">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Come funziona</span><h2 id="come">Dalla campagna all’appuntamento</h2></div>
+      <ol class="steps">
+        {p.passi.map((s, i) => (
+          <li class="card"><span class="n">{i + 1}</span><h3>{s.titolo}</h3><p class="muted">{s.testo}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {p.vantaggi.length > 0 && (
+    <section class="section section--white section--tight" aria-labelledby="perche">
+      <div class="wrap why">
+        <h2 id="perche">Perché Drive2Store</h2>
+        <ul class="checklist">{p.vantaggi.map((v) => <li><Icon name="check" />{v}</li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="modulo">
+    <div class="wrap narrow">
+      <ContactForm esigenza="drive2store" titolo="Parliamo del tuo negozio" sottotitolo={p.cta} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+  h1 .sub { display: block; font-size: .55em; color: var(--brand); margin-top: .3em; letter-spacing: -.01em; }
+  .flow { display: grid; gap: 0; padding: 28px; }
+  .flow-step { display: flex; align-items: center; gap: 14px; font-weight: 700; color: var(--ink); }
+  .flow-step.is-goal .icon-badge { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff; border: 0; }
+  .flow-line { width: 2px; height: 22px; margin-left: 25px; background: linear-gradient(var(--g1), var(--g2)); opacity: .5; }
+  .targets { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px; }
+  .targets li { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--ink); padding: 20px 22px; }
+  .targets :global(svg) { color: var(--brand); flex: none; }
+  .tool h3 { margin: 14px 0 6px; }
+  .tool p { margin: 0; }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 18px; counter-reset: s; }
+  .steps li { position: relative; }
+  .steps .n { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 8px 20px -8px var(--brand-2); }
+  .steps h3 { margin: 14px 0 6px; }
+  .steps p { margin: 0; font-size: .97rem; }
+  .why { display: grid; grid-template-columns: .8fr 1.2fr; gap: 32px; align-items: center; }
+  .why h2 { margin: 0; }
+  .narrow { max-width: 900px; }
+  @media (max-width: 900px) { .hero-grid, .why { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+import type { CollectionEntry } from 'astro:content';
+interface Props { servizio: CollectionEntry<'servizi'>; negozio?: string }
+const { servizio, negozio } = Astro.props;
+const d = servizio.data;
+const q = new URLSearchParams();
+if (negozio) q.set('negozio', negozio);
+if (d.esigenza) q.set('esigenza', d.esigenza);
+const href = `/contatti/${q.size ? `?${q}` : ''}#modulo`;
+const soloMaranello = d.negozi.length === 1 && d.negozi[0] === 'maranello';
+const soloFormigine = d.negozi.length === 1 && d.negozi[0] === 'formigine';
+---
+<a href={href} class="service card card-link glow glow--soft" id={servizio.id}>
+  <span class="icon-badge"><Icon name={d.icona} /></span>
+  <h3>{d.titolo}</h3>
+  <p>{d.descrizione}</p>
+  {(soloMaranello || soloFormigine) && <span class="where">{soloMaranello ? 'Disponibile a Maranello' : 'Disponibile a Formigine'}</span>}
+  <span class="link-arrow">{d.esigenza === 'bolletta' ? 'Carica la bolletta' : d.esigenza === 'assistenza' ? 'Prenota' : 'Chiedi informazioni'} <Icon name="arrow" /></span>
+</a>
+<style>
+  .service { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+  h3 { margin: 8px 0 0; }
+  p { color: var(--muted); margin: 0; font-size: .98rem; }
+  .where { font-size: .8rem; font-weight: 700; color: var(--muted); }
+  .link-arrow { margin-top: auto; padding-top: 6px; }
+</style>

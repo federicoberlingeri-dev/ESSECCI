@@ -1,0 +1,244 @@
+# Pannello di gestione contenuti (Decap CMS) — https://<sito>/admin/
+# Ogni salvataggio crea un commit su GitHub e Netlify ripubblica il sito in 1–2 minuti.
+backend:
+  name: github
+  repo: OWNER/REPO            # [DA CONFIGURARE] es. essecci/sito-essecci
+  branch: main
+  commit_messages:
+    create: 'Nuovo {{collection}}: {{slug}}'
+    update: 'Aggiornato {{collection}}: {{slug}}'
+    delete: 'Eliminato {{collection}}: {{slug}}'
+    uploadMedia: 'Caricato file {{path}}'
+    deleteMedia: 'Eliminato file {{path}}'
+
+# Per provare in locale: `npx decap-server` nella cartella sito, poi apri http://localhost:4321/admin/
+local_backend: true
+
+locale: it
+site_url: https://essecci-multiservice.netlify.app
+display_url: https://essecci-multiservice.netlify.app
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  # ---------------------------------------------------------------- PROMO
+  - name: promo
+    label: Promozioni
+    label_singular: Promozione
+    description: Le promo in corso. Disattiva o imposta una scadenza per toglierle dal sito senza cancellarle.
+    folder: src/content/promo
+    extension: json
+    format: json
+    create: true
+    slug: '{{slug}}'
+    identifier_field: titolo
+    summary: '{{titolo}} — {{negozio}} {{attiva}}'
+    sortable_fields: [titolo, ordine, scadenza]
+    fields:
+      - { name: titolo, label: Titolo, widget: string }
+      - name: negozio
+        label: Negozio
+        widget: select
+        options:
+          - { label: Centro TIM Formigine, value: formigine }
+          - { label: Store Multibrand Maranello, value: maranello }
+          - { label: Entrambi, value: entrambi }
+      - { name: gestore, label: Gestore (facoltativo), widget: relation, collection: gestori, search_fields: [nome], value_field: '{{slug}}', display_fields: [nome], required: false }
+      - { name: descrizione, label: Descrizione, widget: text }
+      - { name: immagine, label: 'Immagine (facoltativa, formato 16:9)', widget: image, required: false }
+      - { name: etichetta, label: 'Etichetta (es. Novità, Solo online)', widget: string, required: false }
+      - { name: scadenza, label: Valida fino al (facoltativo), widget: datetime, format: 'YYYY-MM-DD', date_format: 'DD/MM/YYYY', time_format: false, required: false, hint: Dopo questa data la promo sparisce dal sito. }
+      - { name: note, label: Note legali brevi (facoltative), widget: text, required: false }
+      - name: esigenza
+        label: Argomento preimpostato nel modulo
+        widget: select
+        required: false
+        options:
+          - { label: Telefonia, Internet e TV, value: telefonia }
+          - { label: Analisi bolletta luce e gas, value: bolletta }
+          - { label: Antifurti e assicurazioni, value: antifurti }
+          - { label: Prenotazione assistenza / passaggio dati, value: assistenza }
+      - { name: attiva, label: Pubblicata, widget: boolean, default: true }
+      - { name: ordine, label: Ordine (numero più basso = prima), widget: number, value_type: int, default: 10 }
+
+  # ---------------------------------------------------------------- GESTORI
+  - name: gestori
+    label: Gestori / Partner
+    label_singular: Gestore
+    description: Aggiungere un gestore lo mostra in automatico nella card del negozio, nella pagina negozio e nella striscia partner. Per toglierlo senza cancellarlo, togli la spunta "Attivo".
+    folder: src/content/gestori
+    extension: json
+    format: json
+    create: true
+    slug: '{{slug}}'
+    identifier_field: nome
+    summary: '{{nome}} — {{categoria}}'
+    sortable_fields: [nome, ordine]
+    fields:
+      - { name: nome, label: Nome, widget: string }
+      - name: negozi
+        label: Negozio
+        widget: select
+        multiple: true
+        min: 1
+        options:
+          - { label: Centro TIM Formigine, value: formigine }
+          - { label: Store Multibrand Maranello, value: maranello }
+      - { name: categoria, label: Categoria, widget: string, hint: 'Usata per raggruppare i gestori nella pagina negozio. Usa lo stesso testo per gestori della stessa categoria (es. "Telefonia e Internet", "Luce e Gas", "TV e Internet").' }
+      - { name: descrizione, label: Nota breve (facoltativa), widget: string, required: false }
+      - { name: logo, label: Logo (PNG/SVG con sfondo trasparente), widget: image, required: false, hint: Se vuoto viene mostrato il nome. }
+      - { name: sito, label: Sito web (facoltativo), widget: string, required: false }
+      - { name: attivo, label: Attivo (visibile sul sito), widget: boolean, default: true }
+      - { name: striscia, label: 'Mostra nella striscia I nostri partner', widget: boolean, default: true }
+      - { name: ordine, label: Ordine, widget: number, value_type: int, default: 50 }
+
+  # ---------------------------------------------------------------- SERVIZI
+  - name: servizi
+    label: Servizi
+    label_singular: Servizio
+    folder: src/content/servizi
+    extension: json
+    format: json
+    create: true
+    slug: '{{slug}}'
+    identifier_field: titolo
+    summary: '{{titolo}}'
+    sortable_fields: [titolo, ordine]
+    fields:
+      - { name: titolo, label: Titolo, widget: string }
+      - { name: descrizione, label: Descrizione breve, widget: text }
+      - name: icona
+        label: Icona
+        widget: select
+        options:
+          - { label: Trasferimento, value: transfer }
+          - { label: Ingranaggio, value: settings }
+          - { label: Fulmine (energia), value: bolt }
+          - { label: Smartphone, value: phone }
+          - { label: Scudo (sicurezza), value: shield }
+          - { label: Ombrello (assicurazioni), value: umbrella }
+          - { label: Cuffie (assistenza), value: headset }
+          - { label: Wi-Fi, value: wifi }
+          - { label: TV, value: tv }
+          - { label: SIM, value: sim }
+          - { label: Calendario, value: calendar }
+          - { label: Stella, value: star }
+      - name: negozi
+        label: Disponibile in
+        widget: select
+        multiple: true
+        min: 1
+        default: [formigine, maranello]
+        options:
+          - { label: Centro TIM Formigine, value: formigine }
+          - { label: Store Multibrand Maranello, value: maranello }
+      - name: esigenza
+        label: Argomento preimpostato nel modulo
+        widget: select
+        required: false
+        options:
+          - { label: Telefonia, Internet e TV, value: telefonia }
+          - { label: Analisi bolletta luce e gas, value: bolletta }
+          - { label: Antifurti e assicurazioni, value: antifurti }
+          - { label: Prenotazione assistenza / passaggio dati, value: assistenza }
+      - { name: home, label: In evidenza in Home, widget: boolean, default: false }
+      - { name: attivo, label: Attivo, widget: boolean, default: true }
+      - { name: ordine, label: Ordine, widget: number, value_type: int, default: 50 }
+
+  # ---------------------------------------------------------------- NEGOZI
+  - name: negozi
+    label: Negozi
+    description: Indirizzi, orari, contatti e social dei punti vendita.
+    files:
+      - { name: formigine, label: Centro TIM Formigine, file: src/content/negozi/formigine.json, fields: &negozio_fields [
+          { name: nome, label: Nome completo, widget: string },
+          { name: nomeBreve, label: Nome breve, widget: string },
+          { name: tipo, label: Tipo di negozio, widget: string },
+          { name: slogan, label: Slogan, widget: string },
+          { name: descrizione, label: Descrizione, widget: text },
+          { name: clienti, label: Clienti (es. Privati e Business), widget: string, required: false },
+          { name: offerta, label: Offerta, widget: list, fields: [ { name: titolo, label: Titolo, widget: string }, { name: testo, label: Testo, widget: string, required: false } ] },
+          { name: indirizzo, label: Indirizzo (via e civico), widget: string },
+          { name: citta, label: 'Città (es. Formigine (MO))', widget: string },
+          { name: telefono, label: Telefono, widget: string, required: false },
+          { name: whatsapp, label: 'WhatsApp (con prefisso, es. +39 333...)', widget: string, required: false },
+          { name: email, label: Email, widget: string, required: false },
+          { name: orari, label: Orari, widget: list, fields: [ { name: giorni, label: Giorni, widget: string }, { name: ore, label: Orario, widget: string } ] },
+          { name: mappa, label: Link Google Maps (facoltativo), widget: string, required: false },
+          { name: foto, label: Foto del negozio, widget: image, required: false },
+          { name: social, label: Social, widget: object, fields: [
+              { name: facebook, label: Facebook (URL), widget: string, required: false },
+              { name: instagram, label: Instagram (URL), widget: string, required: false },
+              { name: linkedin, label: LinkedIn (URL), widget: string, required: false } ] },
+          { name: ordine, label: Ordine, widget: number, value_type: int } ] }
+      - { name: maranello, label: Store Multibrand Maranello, file: src/content/negozi/maranello.json, fields: *negozio_fields }
+
+  # ---------------------------------------------------------------- PAGINE
+  - name: pagine
+    label: Pagine
+    files:
+      - name: drive2store
+        label: Drive2Store (B2B)
+        file: src/content/pagine/drive2store.json
+        fields:
+          - { name: titolo, label: Titolo, widget: string }
+          - { name: sottotitolo, label: Sottotitolo, widget: string }
+          - { name: introduzione, label: Introduzione, widget: text }
+          - { name: destinatari, label: A chi è rivolto, widget: list, field: { name: voce, label: Voce, widget: string } }
+          - name: strumenti
+            label: Strumenti
+            widget: list
+            fields:
+              - { name: titolo, label: Titolo, widget: string }
+              - { name: testo, label: Testo, widget: string }
+              - { name: icona, label: Icona, widget: select, options: [headset, chat, calendar, target, phone, star] }
+          - { name: passi, label: Come funziona (passi), widget: list, fields: [ { name: titolo, label: Titolo, widget: string }, { name: testo, label: Testo, widget: string } ] }
+          - { name: vantaggi, label: Vantaggi, widget: list, field: { name: voce, label: Voce, widget: string } }
+          - { name: cta, label: Testo sopra il modulo, widget: string }
+
+  # ---------------------------------------------------------------- IMPOSTAZIONI
+  - name: impostazioni
+    label: Impostazioni generali
+    files:
+      - name: sito
+        label: Dati aziendali, Home e modulo contatti
+        file: src/content/impostazioni/sito.json
+        fields:
+          - { name: ragioneSociale, label: Ragione sociale, widget: string }
+          - { name: marchio, label: Marchio, widget: string }
+          - { name: piva, label: Partita IVA, widget: string }
+          - { name: sedeLegale, label: Sede legale, widget: string }
+          - { name: emailGenerale, label: Email generale / privacy, widget: string }
+          - { name: logo, label: Logo (sostituisce il logo provvisorio), widget: image, required: false }
+          - { name: linkedinAzienda, label: LinkedIn aziendale (URL), widget: string, required: false }
+          - name: hero
+            label: Testata della Home
+            widget: object
+            fields:
+              - { name: titolo, label: Titolo, widget: string }
+              - { name: evidenza, label: Parte del titolo colorata, widget: string }
+              - { name: sottotitolo, label: Sottotitolo, widget: text }
+              - { name: foto, label: Foto reale (facoltativa, 4:3), widget: image, required: false }
+          - name: esigenze
+            label: Argomenti del modulo contatti
+            hint: 'Non modificare il campo "Codice" degli argomenti esistenti: è usato da servizi e promo.'
+            widget: list
+            fields:
+              - { name: id, label: Codice (senza spazi), widget: string }
+              - { name: etichetta, label: Testo mostrato, widget: string }
+              - name: tipo
+                label: Campi aggiuntivi
+                widget: select
+                options:
+                  - { label: Nessuno, value: standard }
+                  - { label: Allegato bolletta, value: bolletta }
+                  - { label: Data e fascia oraria, value: appuntamento }
+                  - { label: Dati azienda (Drive2Store), value: b2b }
+              - name: negozi
+                label: Disponibile per
+                widget: select
+                multiple: true
+                required: false
+                options:
+                  - { label: Centro TIM Formigine, value: formigine }
+                  - { label: Store Multibrand Maranello, value: maranello }

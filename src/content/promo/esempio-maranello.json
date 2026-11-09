@@ -1,0 +1,13 @@
+{
+  "titolo": "[ESEMPIO] Promo luce e gas a Maranello",
+  "negozio": "maranello",
+  "gestore": "",
+  "descrizione": "Questa è una promo di esempio: sostituiscila dal pannello di gestione con un’offerta reale.",
+  "immagine": "",
+  "etichetta": "Esempio",
+  "scadenza": "",
+  "note": "",
+  "esigenza": "bolletta",
+  "attiva": true,
+  "ordine": 2
+}

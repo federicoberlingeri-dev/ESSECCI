@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import PromoCard from '../components/PromoCard.astro';
+import Social from '../components/Social.astro';
+import { getPromo, getGestori, getNegozi, temaNegozio, type NegozioId } from '../lib/data';
+const promo = await getPromo();
+const gestori = await getGestori();
+const negozi = await getNegozi();
+const nomeGestore = (id: string) => gestori.find((g) => g.id === id)?.data.nome;
+---
+<Base title="Promozioni" description="Le promozioni in corso al Centro TIM Formigine e allo Store Multibrand Maranello: telefonia, internet, TV, luce e gas.">
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / Promozioni</nav>
+      <span class="eyebrow">Promozioni</span>
+      <h1>Promo in corso</h1>
+      <p class="lead">Le offerte dei nostri gestori cambiano spesso. Qui trovi quelle in evidenza; per le condizioni aggiornate chiedi in negozio o seguici sui social.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label="Filtra per negozio" data-filters>
+        <button type="button" class="btn btn--sm btn--ghost is-on" data-f="tutti" aria-pressed="true">Tutte</button>
+        {negozi.map((n) => <button type="button" class:list={['btn btn--sm btn--ghost', temaNegozio[n.id as NegozioId]]} data-f={n.id} aria-pressed="false"><span class="dot" aria-hidden="true" />{n.data.nomeBreve}</button>)}
+      </div>
+      {promo.length > 0
+        ? <div class="grid grid-3" data-list>{promo.map((p) => <PromoCard promo={p} nomeGestore={nomeGestore(p.data.gestore)} />)}</div>
+        : null}
+      <p class="center muted empty" data-empty hidden={promo.length > 0}>Nessuna promozione pubblicata in questo momento: seguici sui social o passa in negozio.</p>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="section-head"><h2>Segui le offerte di ogni negozio</h2><p>Ogni negozio pubblica sui propri canali le offerte dei suoi gestori.</p></div>
+      <div class="grid grid-2">
+        {negozi.map((n) => (
+          <div class:list={['card glow glow--soft soc', temaNegozio[n.id as NegozioId]]}>
+            <h3>{n.data.nome}</h3>
+            <Social social={n.data.social} nome={n.data.nome} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Filtro per negozio + nasconde le promo scadute anche senza nuovo deploy.
+  const oggi = new Date().toISOString().slice(0, 10);
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-promo]'));
+  cards.forEach((c) => { if (c.dataset.scadenza && c.dataset.scadenza < oggi) c.remove(); });
+  const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+  const btns = document.querySelectorAll<HTMLButtonElement>('[data-filters] button');
+  const apply = (f: string) => {
+    let n = 0;
+    document.querySelectorAll<HTMLElement>('[data-promo]').forEach((c) => {
+      const on = f === 'tutti' || c.dataset.negozio === f || c.dataset.negozio === 'entrambi';
+      c.hidden = !on; if (on) n++;
+    });
+    empty.hidden = n > 0;
+  };
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+    apply(b.dataset.f!);
+  }));
+  apply('tutti');
+</script>
+
+<style>
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 36px; }
+  .filters .is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); }
+  .soc { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .soc h3 { margin: 0; }
+  [data-promo][hidden] { display: none; }
+</style>

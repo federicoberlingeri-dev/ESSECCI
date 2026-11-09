@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import StoreInfo from '../components/StoreInfo.astro';
+import { getNegozi } from '../lib/data';
+const negozi = await getNegozi();
+---
+<Base title="Contatti e prenotazioni" description="Scrivi al Centro TIM Formigine o allo Store Multibrand Maranello, prenota un appuntamento in negozio o invia la bolletta da analizzare.">
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="breadcrumb" aria-label="Percorso"><a href="/">Home</a> / Contatti</nav>
+      <span class="eyebrow">Contatti</span>
+      <h1>Come possiamo aiutarti?</h1>
+      <p class="lead">Scegli il negozio e l’argomento: la richiesta arriva direttamente a chi può risponderti. Per Drive2Store seleziona “Info B2B Drive2Store”.</p>
+    </div>
+  </section>
+  <section class="section section--tight" id="modulo">
+    <div class="wrap narrow">
+      <ContactForm titolo="Invia una richiesta" />
+    </div>
+  </section>
+  <section class="section section--white" id="dove-siamo" aria-labelledby="dove-title">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Dove siamo</span><h2 id="dove-title">I nostri negozi</h2></div>
+      <div class="grid grid-2">{negozi.map((n) => <StoreInfo negozio={n} />)}</div>
+    </div>
+  </section>
+</Base>
+<style>.narrow { max-width: 900px; }</style>

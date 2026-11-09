@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Richiesta inviata" description="Grazie per averci contattato." noindex>
+  <section class="section"><div class="wrap center ok">
+    <span class="icon-badge"><Icon name="check" /></span>
+    <h1>Grazie, richiesta inviata!</h1>
+    <p class="muted">Ti ricontatteremo al più presto.</p>
+    <a href="/" class="btn btn--primary">Torna alla home</a>
+  </div></section>
+</Base>
+<style>.ok { display: grid; justify-items: center; gap: 12px; } .ok .icon-badge { color: var(--ok); }</style>

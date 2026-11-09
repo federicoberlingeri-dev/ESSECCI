@@ -1,0 +1,58 @@
+---
+// Card grande di un negozio (Home): elemento chiave del "capire in 3 secondi".
+import Icon from './Icon.astro';
+import StoreArt from './StoreArt.astro';
+import { getGestori, temaNegozio, type NegozioId } from '../lib/data';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { negozio: CollectionEntry<'negozi'> }
+const { negozio } = Astro.props;
+const id = negozio.id as NegozioId;
+const d = negozio.data;
+const gestori = id === 'maranello' ? await getGestori('maranello') : [];
+---
+<article class:list={['store-card card glow', temaNegozio[id]]}>
+  <div class="top">
+    <div>
+      <span class="chip">{d.tipo}</span>
+      <h3 class="name">{d.nome}</h3>
+      <p class="slogan">{d.slogan}</p>
+    </div>
+    <div class="art-wrap"><StoreArt tipo={id} /></div>
+  </div>
+  <p class="desc">{d.descrizione}</p>
+  <ul class="offer">
+    {d.offerta.map((o) => <li><Icon name="check" size={18} />{o.titolo}</li>)}
+  </ul>
+  {gestori.length > 0 && (
+    <div class="brands" aria-label="Gestori disponibili">
+      {gestori.map((g) => g.data.logo ? <img src={g.data.logo} alt={g.data.nome} height="22" loading="lazy" /> : <span>{g.data.nome}</span>)}
+    </div>
+  )}
+  {id === 'formigine' && d.clienti && <p class="clients"><Icon name="users" size={18} />{d.clienti}</p>}
+  <div class="btn-row actions">
+    <a href={`/${id}/`} class="btn btn--outline">Vai allo store di {d.citta.replace(/\s*\(.*\)/, '')} <Icon name="arrow" /></a>
+    <a href={`/contatti/?negozio=${id}#modulo`} class="link-arrow">Scrivi al negozio</a>
+  </div>
+</article>
+<style>
+  .store-card { display: flex; flex-direction: column; gap: 14px; height: 100%; }
+  .top { display: grid; grid-template-columns: 1fr 140px; gap: 12px; align-items: start; }
+  .name { font-size: clamp(1.5rem, 2.6vw, 1.95rem); margin: 12px 0 4px; }
+  .slogan { color: var(--accent); font-weight: 700; margin: 0; }
+  .desc { color: var(--muted); margin: 0; }
+  .offer { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-weight: 600; color: var(--ink); font-size: .97rem; }
+  .offer li { display: flex; gap: 8px; align-items: center; }
+  .offer :global(svg) { color: var(--accent); flex: none; }
+  .brands { display: flex; flex-wrap: wrap; gap: 6px; }
+  .brands span { font-size: .82rem; font-weight: 700; padding: .3em .7em; border-radius: 8px; background: #f3f6fb; border: 1px solid var(--line); color: var(--ink-2); }
+  .brands img { height: 22px; width: auto; }
+  .clients { display: flex; gap: 8px; align-items: center; font-weight: 700; color: var(--ink); margin: 0; }
+  .clients :global(svg) { color: var(--accent); }
+  .actions { margin-top: auto; padding-top: 8px; align-items: center; gap: 18px; }
+  @media (max-width: 520px) {
+    .top { grid-template-columns: 1fr 84px; }
+    .desc { display: none; }
+    .offer { font-size: .9rem; gap: 6px 10px; }
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+
+const nav = [
+  { href: '/formigine/', label: 'TIM Formigine', dot: 't-tim' },
+  { href: '/maranello/', label: 'Multibrand Maranello', dot: 't-mb' },
+  { href: '/servizi/', label: 'Servizi' },
+  { href: '/drive2store/', label: 'B2B Drive2Store' },
+  { href: '/promozioni/', label: 'Promozioni' },
+  { href: '/contatti/', label: 'Contatti' },
+];
+const path = Astro.url.pathname;
+---
+<header class="site-header" data-header>
+  <div class="wrap bar">
+    <Logo />
+    <nav class="nav" id="main-nav" aria-label="Navigazione principale">
+      <ul>
+        {nav.map((n) => (
+          <li>
+            <a href={n.href} class:list={[n.dot]} aria-current={path.startsWith(n.href) ? 'page' : undefined}>
+              {n.dot && <span class="dot" aria-hidden="true" />}{n.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a href="/contatti/#modulo" class="btn btn--primary btn--sm nav-cta">Prenota in store</a>
+    </nav>
+    <button class="menu-btn" type="button" aria-controls="main-nav" aria-expanded="false" data-menu-btn>
+      <Icon name="menu" class="i-open" /><Icon name="close" class="i-close" />
+      <span class="sr-only">Menu</span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    header.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  header.querySelectorAll('.nav a').forEach((a) => a.addEventListener('click', () => {
+    btn.setAttribute('aria-expanded', 'false'); header.classList.remove('is-open'); document.body.style.overflow = '';
+  }));
+  const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid transparent; transition: border-color .2s, box-shadow .2s; }
+  /* il blur sta su un pseudo-elemento: sull'header renderebbe il menu mobile (fixed) relativo all'header */
+  .site-header::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgb(255 255 255 / .82); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); }
+  .site-header.is-open::before { background: #fff; }
+  .site-header.is-scrolled { border-color: var(--line); box-shadow: 0 6px 24px -18px rgb(13 26 58 / .4); }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px; }
+  .nav { display: flex; align-items: center; gap: 18px; }
+  .nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 10px; text-decoration: none; color: var(--ink-2); font-weight: 600; font-size: .95rem; white-space: nowrap; }
+  .nav ul a:hover { background: #eef3fb; color: var(--ink); }
+  .nav ul a[aria-current='page'] { color: var(--brand); background: #eaf1ff; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: linear-gradient(135deg, var(--g1), var(--g2)); }
+  .menu-btn { display: none; width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); place-items: center; cursor: pointer; }
+  .menu-btn :global(.i-close) { display: none; }
+  .is-open .menu-btn :global(.i-open) { display: none; }
+  .is-open .menu-btn :global(.i-close) { display: block; }
+
+  @media (max-width: 1100px) {
+    .menu-btn { display: grid; }
+    .nav { position: fixed; inset: 76px 0 0 0; background: #fff; flex-direction: column; align-items: stretch; gap: 8px; padding: 20px var(--gutter) 32px; overflow-y: auto; transform: translateY(-8px); opacity: 0; visibility: hidden; transition: opacity .2s, transform .2s, visibility .2s; }
+    .is-open .nav { opacity: 1; visibility: visible; transform: none; }
+    .nav ul { flex-direction: column; gap: 2px; }
+    .nav ul a { display: flex; font-size: 1.1rem; padding: 14px 12px; border-bottom: 1px solid var(--line); border-radius: 0; }
+    .nav-cta { margin-top: 12px; min-height: 52px; font-size: 1.05rem; }
+  }
+</style>

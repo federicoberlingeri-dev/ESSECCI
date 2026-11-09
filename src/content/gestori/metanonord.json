@@ -1,0 +1,13 @@
+{
+  "nome": "MetanoNord",
+  "negozi": [
+    "maranello"
+  ],
+  "categoria": "Luce e Gas",
+  "descrizione": "",
+  "logo": "",
+  "sito": "",
+  "attivo": true,
+  "striscia": true,
+  "ordine": 22
+}

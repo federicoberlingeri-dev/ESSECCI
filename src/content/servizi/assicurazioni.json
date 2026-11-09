@@ -1,0 +1,13 @@
+{
+  "titolo": "Assicurazioni",
+  "descrizione": "Coperture assicurative per te, la tua famiglia e i tuoi beni.",
+  "icona": "umbrella",
+  "negozi": [
+    "formigine",
+    "maranello"
+  ],
+  "esigenza": "antifurti",
+  "home": false,
+  "attivo": true,
+  "ordine": 6
+}

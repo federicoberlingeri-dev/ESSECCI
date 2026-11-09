@@ -1,0 +1,13 @@
+{
+  "nome": "Sky",
+  "negozi": [
+    "maranello"
+  ],
+  "categoria": "TV e Internet",
+  "descrizione": "",
+  "logo": "",
+  "sito": "",
+  "attivo": true,
+  "striscia": true,
+  "ordine": 12
+}

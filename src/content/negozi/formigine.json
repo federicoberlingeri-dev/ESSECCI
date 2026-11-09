@@ -1,0 +1,57 @@
+{
+  "nome": "Centro TIM Formigine",
+  "nomeBreve": "TIM Formigine",
+  "tipo": "Monomarca ufficiale TIM",
+  "slogan": "Il tuo punto di riferimento ufficiale TIM",
+  "descrizione": "Il punto vendita ufficiale TIM di Formigine: offerte mobile e fisso, intrattenimento TIMVision, TIM Energia, assicurazioni e assistenza, con consulenza dedicata a privati e aziende.",
+  "clienti": "Privati e Business",
+  "offerta": [
+    {
+      "titolo": "Mobile",
+      "testo": "Offerte e SIM TIM per smartphone, tablet e dispositivi connessi."
+    },
+    {
+      "titolo": "Fisso e Internet casa",
+      "testo": "Linee fisse e connessione internet per la casa e l’ufficio."
+    },
+    {
+      "titolo": "TIMVision",
+      "testo": "Intrattenimento, serie, film e sport sulla tua TV."
+    },
+    {
+      "titolo": "TIM Energia",
+      "testo": "Luce e gas per la casa con TIM."
+    },
+    {
+      "titolo": "Assicurazioni",
+      "testo": "Soluzioni assicurative proposte da TIM."
+    },
+    {
+      "titolo": "Assistenza",
+      "testo": "Supporto in negozio su linee, dispositivi e servizi TIM."
+    }
+  ],
+  "indirizzo": "Via [DA CONFERMARE]",
+  "citta": "Formigine (MO)",
+  "telefono": "[DA CONFERMARE]",
+  "whatsapp": "",
+  "email": "[DA CONFERMARE]",
+  "orari": [
+    {
+      "giorni": "Lunedì – Sabato",
+      "ore": "[DA CONFERMARE]"
+    },
+    {
+      "giorni": "Domenica",
+      "ore": "[DA CONFERMARE]"
+    }
+  ],
+  "mappa": "",
+  "foto": "",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "linkedin": ""
+  },
+  "ordine": 1
+}
