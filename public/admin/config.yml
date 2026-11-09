@@ -15,8 +15,8 @@ backend:
 local_backend: true
 
 locale: it
-site_url: https://essecci-multiservice.netlify.app
-display_url: https://essecci-multiservice.netlify.app
+site_url: https://essecci.netlify.app
+display_url: https://essecci.netlify.app
 media_folder: public/uploads
 public_folder: /uploads
 

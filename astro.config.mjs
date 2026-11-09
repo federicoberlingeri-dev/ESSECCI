@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // URL pubblico: su Netlify arriva da process.env.URL; sostituire col dominio definitivo quando disponibile.
-const site = process.env.SITE_URL || process.env.URL || 'https://essecci-multiservice.netlify.app';
+const site = process.env.SITE_URL || process.env.URL || 'https://essecci.netlify.app';
 
 export default defineConfig({
   site,
